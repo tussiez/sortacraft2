@@ -1,7 +1,7 @@
 import Methods from '../modules/Methods.js'
 
 const Commands = {
-  supported: ['tp', 'pos','fps'],
+  supported: ['tp', 'pos','fps','help'],
   parse: function (str, Player) {
     if (!str.startsWith('/')) return; // Not a command
     let cmd = str.replace('/', '').split(' ')[0];
@@ -35,8 +35,12 @@ const Commands = {
       );
     }
 
+    if(cmd == 'help'){
+      this.message("[Game]: Supported: "+Methods.string(this.supported))
+    }
+
     if (!this.supported.includes(cmd)) {
-      this.message('[Game]: Unsupported command.. :/')
+      this.message('[Game]: Unknown command - Try /help')
     }
   }
 }
