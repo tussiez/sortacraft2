@@ -11,6 +11,23 @@ const worker = new Worker('main.js', { type: 'module' });
 
 worker.postMessage(['main', offscreen, window.innerWidth, window.innerHeight], [offscreen]);
 
+// Recieve
+worker.onmessage = function(e){
+  let msg = e.data[0];
+  if(msg == 'message'){
+    makeMessage(e.data[1]);
+  }
+}
+
+function makeMessage(msg){
+  let div = document.createElement('div');
+  div.setAttribute('class','message');
+  div.innerHTML = msg;
+  document.getElementById('chatBox').appendChild(div);
+  setTimeout(function(){
+    div.remove();
+  },5000)
+}
 
 // Pass events
 canvas.addEventListener('mousemove', function (e) {

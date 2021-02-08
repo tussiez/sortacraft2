@@ -20,9 +20,26 @@ body {
   left:0;
 }
 
+#chatBox {
+  width:60%;
+  height:20%;
+  background-color:none;
+  color:white;
+  position: absolute;
+  top: calc(90% - 24px - 20%);
+  left: 0;
+}
+
+.message {
+  height: 24px;
+  display:inline-block;
+  background-color: rgba(0,0,0,.25);
+  padding:2px;
+}
+
 #commands {
   height:24px;
-  width:60%;
+  width:30%;
   background-color:black;
   color: white;
   position: absolute;

@@ -16,6 +16,8 @@ import ChunkGen from '/modules/ChunkGen.js';
 import Raycast from '/modules/Raycast.js'
 import Commands from '/modules/Commands.js';
 
+Commands.message = (msg) => postMessage(['message',msg])
+
 onmessage = function (e) {
   let command = e.data[0];
   if (command == 'main') {

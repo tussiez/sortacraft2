@@ -73,7 +73,7 @@ function makeWorld(seed, x1, y1, z1, cellSize) {
     var x2a = x + x1;
     var z2a = z + z1;
     y = y || 0;
-    var eleD = 128;//perlin.noise(x2a / 64, z2a / 64, y) * 64 + 32;
+    var eleD = perlin.noise(x2a / 256, z2a / 256, y) * 64 + 128;
     var ele = perlin.noise(x2a / eleD, z2a / eleD, y);
     var rough = perlin.noise(x2a / 64, z2a / 64, y);
     var det = perlin.noise(x2a / 32, z2a / 32, y);
