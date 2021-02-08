@@ -21,12 +21,20 @@ worker.onmessage = function(e){
 
 function makeMessage(msg){
   let div = document.createElement('div');
+  let br = document.createElement('br');
   div.setAttribute('class','message');
   div.innerHTML = msg;
   document.getElementById('chatBox').appendChild(div);
+  document.getElementById('chatBox').appendChild(br);
+  document.getElementById('chatBox').scrollBy(0,30)
   setTimeout(function(){
-    div.remove();
-  },5000)
+    div.style.transform ='translateY(-25px)';
+    div.style.opacity = '0'
+    setTimeout(function(){
+    document.getElementById('chatBox').removeChild(div);
+    document.getElementById('chatBox').removeChild(br);
+    },500);
+  },4500)
 }
 
 // Pass events

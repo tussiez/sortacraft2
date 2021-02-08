@@ -1,7 +1,7 @@
 import Methods from '../modules/Methods.js'
 
 const Commands = {
-  supported: ['tp', 'pos'],
+  supported: ['tp', 'pos','fps'],
   parse: function (str, Player) {
     if (!str.startsWith('/')) return; // Not a command
     let cmd = str.replace('/', '').split(' ')[0];
@@ -14,6 +14,10 @@ const Commands = {
       Player.camera.position.set(...Methods.arrToNum(args)); //Spread lol
 
       this.message("[Game]: Teleported to " + (Methods.string(Methods.arrToNum(args))));
+    }
+
+    if(cmd == 'fps'){
+      this.message("[Game]: " + Player.fps + " fps");
     }
 
     if (cmd == 'pos') {

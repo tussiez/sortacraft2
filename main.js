@@ -75,6 +75,14 @@ let Player = {
   seed: Math.floor(Math.random() * 99999),
   selectedVoxel: 1,
   camera: undefined,
+  fps: 0,
+  getFPS: function(){
+    let last = renderer.info.render.frame;
+    setTimeout(function(){
+      Player.fps = renderer.info.render.frame - last;
+      Player.getFPS();
+    },1000)
+  },
 }
 
 function keydown(dat) {
@@ -182,6 +190,7 @@ function main(c) {
   // localWorld.cells[x,y,z] = position
 
   createPointer();
+  Player.getFPS();
 
 
   camera.position.set(32, 48, 32);
@@ -192,6 +201,7 @@ function main(c) {
   }).catch(function(err){
     throw new Error("WASM initiation failed with error: " + err);
   });
+
 }
 
 function createPointer() {
