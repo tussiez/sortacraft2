@@ -1,0 +1,21 @@
+@font-face {
+  font-family: Minecraft;
+  src: url('resources/Minecraft.ttf')
+}
+
+body {
+  margin: 0px;
+  padding: 0px;
+  overflow: hidden;
+  background-image:url('resources/img/dirt.png');
+  background-size:64px 64px;
+  background-repeat: repeat;
+  image-rendering:pixelated;
+  font-family:Minecraft;
+}
+
+.gameCanvas {
+  position: absolute;
+  top:0;
+  left:0;
+}
