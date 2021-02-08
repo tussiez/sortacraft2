@@ -6,35 +6,38 @@ const offscreen = document.getElementById('3d').transferControlToOffscreen();
 const canvas = document.getElementById('3d');
 let typingCommand = false;
 let typedCommand = '';
+let removing = 0;
 
 const worker = new Worker('main.js', { type: 'module' });
 
 worker.postMessage(['main', offscreen, window.innerWidth, window.innerHeight], [offscreen]);
 
 // Recieve
-worker.onmessage = function(e){
+worker.onmessage = function (e) {
   let msg = e.data[0];
-  if(msg == 'message'){
+  if (msg == 'message') {
     makeMessage(e.data[1]);
   }
 }
 
-function makeMessage(msg){
+function makeMessage(msg) {
   let div = document.createElement('div');
   let br = document.createElement('br');
-  div.setAttribute('class','message');
+  div.setAttribute('class', 'message');
   div.innerHTML = msg;
   document.getElementById('chatBox').appendChild(div);
   document.getElementById('chatBox').appendChild(br);
-  document.getElementById('chatBox').scrollBy(0,30)
-  setTimeout(function(){
-    div.style.transform ='translateY(-25px)';
-    div.style.opacity = '0'
-    setTimeout(function(){
-    document.getElementById('chatBox').removeChild(div);
-    document.getElementById('chatBox').removeChild(br);
-    },500);
-  },4500)
+  document.getElementById('chatBox').scrollBy(0, 30)
+  setTimeout(function () {
+    removing++;
+    div.style.transform = 'translateY(-' + 25 + 'px)';
+    div.style.opacity = '0';
+    div.removing = true;
+    setTimeout(function () {
+      document.getElementById('chatBox').removeChild(div);
+      document.getElementById('chatBox').removeChild(br);
+    }, 500);
+  }, 4500)
 }
 
 // Pass events
@@ -56,9 +59,17 @@ canvas.addEventListener('mouseup', function (e) {
   }
 })
 document.body.addEventListener('keydown', function (e) {
+  let init = false;
   if (e.key == '/' && typingCommand == false) {
     typingCommand = true;
     typedCommand = '';
+    document.getElementById('inputCommand').innerHTML = '';
+    document.getElementById('commands').style.display = 'block';
+  }
+  if (e.key == 't' && typingCommand == false) {
+    typingCommand = true;
+    typedCommand = '';
+    init = true;
     document.getElementById('inputCommand').innerHTML = '';
     document.getElementById('commands').style.display = 'block';
   }
@@ -69,11 +80,9 @@ document.body.addEventListener('keydown', function (e) {
   }
   if (typingCommand == true && e.key.length == 1) {
     typedCommand += e.key;
-    if(typedCommand == '/'){
-      document.getElementById('inputCommand').innerHTML = '<span style="color:gray">/ (type a command)</span>'
-    } else {
-    document.getElementById('inputCommand').innerHTML = typedCommand;
-    }
+    let placeholder = typedCommand;
+    if (init == true) { typedCommand = ''; placeholder = ''}
+    document.getElementById('inputCommand').innerText = placeholder;
   }
   if (typingCommand == true && e.key == 'Backspace') {
     typedCommand = typedCommand.substring(0, typedCommand.length - 1)

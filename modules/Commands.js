@@ -1,9 +1,12 @@
 import Methods from '../modules/Methods.js'
 
 const Commands = {
-  supported: ['tp', 'pos','fps','help'],
+  supported: ['tp', 'pos', 'fps', 'help'],
   parse: function (str, Player) {
-    if (!str.startsWith('/')) return; // Not a command
+    if (!str.startsWith('/')) {
+      this.message('[You]: ' + str);
+      return;
+    }; // Not a command
     let cmd = str.replace('/', '').split(' ')[0];
     let args = str.replace('/', '').split(' ').splice(1)
 
@@ -16,7 +19,7 @@ const Commands = {
       this.message("[Game]: Teleported to " + (Methods.string(Methods.arrToNum(args))));
     }
 
-    if(cmd == 'fps'){
+    if (cmd == 'fps') {
       this.message("[Game]: " + Player.fps + " fps");
     }
 
@@ -35,8 +38,8 @@ const Commands = {
       );
     }
 
-    if(cmd == 'help'){
-      this.message("[Game]: Supported: "+Methods.string(this.supported))
+    if (cmd == 'help') {
+      this.message("[Game]: Supported: " + Methods.string(this.supported))
     }
 
     if (!this.supported.includes(cmd)) {
