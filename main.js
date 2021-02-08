@@ -14,7 +14,7 @@ import VoxelWorld from '/modules/VoxelEngine.js';
 import GeometryData from '/modules/GeometryData.js';
 import ChunkGen from '/modules/ChunkGen.js';
 import Raycast from '/modules/Raycast.js'
-
+import Commands from '/modules/Commands.js';
 
 onmessage = function (e) {
   let command = e.data[0];
@@ -38,6 +38,9 @@ onmessage = function (e) {
   }
   if (command == 'mouseup') {
     mouseup(e.data);
+  }
+  if(command == 'playerCommand'){
+    playerCommand(e.data)
   }
 }
 
@@ -94,6 +97,10 @@ function mousedown(e) {
   if (e[1] == 0) {
     modifyChunk(0); //Break block
   }
+}
+
+function playerCommand(e){
+  Commands.parse(e[1], Player);
 }
 
 function mouseup() {

@@ -1,0 +1,19 @@
+import Methods from '../modules/Methods.js'
+
+const Commands ={
+  parse: function(str,Player){
+    if(!str.startsWith('/')) return; // Not a command
+    let cmd = str.replace('/','').split(' ')[0];
+    let args = str.replace('/','').split(' ').splice(1)
+    
+
+    // Commands
+    if(cmd == 'tp' && args.length == 3 && Methods.arrIsNum(Methods.arrToNum(args)) == true){
+      // Command is 'tp', there are 3 arguments (x,y,z) && the array is comprised of numbers
+
+      Player.camera.position.set(...Methods.arrToNum(args)); //Spread lol
+    }
+  }
+}
+
+export default Commands;

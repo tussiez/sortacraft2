@@ -19,3 +19,17 @@ body {
   top:0;
   left:0;
 }
+
+#commands {
+  height:24px;
+  width:60%;
+  background-color:black;
+  color: white;
+  position: absolute;
+  left: 0;
+  top: 90%;
+  display:none;
+}
+#inputCommand {
+  margin-left: 5px;
+}

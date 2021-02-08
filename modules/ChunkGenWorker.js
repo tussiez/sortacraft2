@@ -28,12 +28,6 @@ function makeWorld(seed, x1, y1, z1, cellSize) {
     for (let z = 0; z < cellSize; z++) {
       let hm = mineHeight(x, z);
       let biome = getBiome(x, z, hm);
-      let cactiNoise = perlin.noise((x+x1)/2,(z+z1)/2,0);
-      if(biome == 3 && cactiNoise > .8){
-        for(let i = 0;i < cactiNoise*5-2;i++){
-          voxWorld.setVoxel(x,hm+i+1,z,47);
-        }
-      }
       voxWorld.setVoxel(x, hm, z, biome);
       for (let y = 0; y < cellSize; y++) {
         let type = y < hm - 2 ? 1 : 6;
@@ -55,6 +49,12 @@ function makeWorld(seed, x1, y1, z1, cellSize) {
           }
         }
       }
+      let cactiNoise = perlin.noise((x+x1)/2,(z+z1)/2,0);
+      if(biome == 3 && cactiNoise > .8 && voxWorld.getVoxel(x,hm-1,z) != 0){
+        for(let i = 0;i < cactiNoise*5-2;i++){
+          voxWorld.setVoxel(x,hm+i+1,z,47);
+        }
+      }
 
     }
   }
@@ -62,9 +62,9 @@ function makeWorld(seed, x1, y1, z1, cellSize) {
   postMessage(['done', cell, x1 / cellSize, y1 / cellSize, z1 / cellSize])
 
   function getBiome(x, z, hm) {
-    let g = perlin.noise((x + x1) / 64, (z + z1) / 64, 0);
+    let g = perlin.noise((x + x1) / 256, (z + z1) / 256, 0);
     if (hm > cellSize - 5) return 33;
-    if (g >= .8) return 33;
+    if (g >= .7) return 33;
     if (g > .3) return 2;
     if (g < .3) return 3;
   }
@@ -73,7 +73,7 @@ function makeWorld(seed, x1, y1, z1, cellSize) {
     var x2a = x + x1;
     var z2a = z + z1;
     y = y || 0;
-    var eleD = perlin.noise(x2a / 12, z2a / 12, y) * 52 + 64;
+    var eleD = 128;//perlin.noise(x2a / 64, z2a / 64, y) * 64 + 32;
     var ele = perlin.noise(x2a / eleD, z2a / eleD, y);
     var rough = perlin.noise(x2a / 64, z2a / 64, y);
     var det = perlin.noise(x2a / 32, z2a / 32, y);

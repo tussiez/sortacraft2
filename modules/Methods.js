@@ -30,6 +30,19 @@ const Methods = {
       return err;
     });
   },
+  arrToNum: function(arr){
+    let a = [];
+    for(let i in arr){
+      a.push(Number(arr[i]))
+    };
+    return a;
+  },
+  arrIsNum: function(arr){
+    for(let i in arr){
+      if(isNaN(arr[i])) return false;
+    }
+    return true;
+  },
   string: function (arr) {
     return arr.toString();
   },
@@ -51,6 +64,7 @@ const Methods = {
   sub: function(arr,ar2){
     return [arr[0]-ar2[0],arr[1]-ar2[1],arr[2]-ar2[2]];
   },
+  // DOESN'T WORK
   WASMSub: function(arr1,arr2){
     /*Takes 2 arrays with 3 values in each array (must be a number) */
     if(!WASMInitiated){
