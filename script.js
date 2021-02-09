@@ -30,7 +30,6 @@ function makeMessage(msg) {
   document.getElementById('chatBox').scrollBy(0, 30)
   setTimeout(function () {
     removing++;
-    div.style.transform = 'translateY(-' + 25 + 'px)';
     div.style.opacity = '0';
     div.removing = true;
     setTimeout(function () {
