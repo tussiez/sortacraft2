@@ -1,7 +1,7 @@
 import Methods from '../modules/Methods.js'
 
 const Commands = {
-  supported: ['tp', 'pos', 'fps', 'help'],
+  supported: ['tp', 'pos', 'fps', 'help', 'speed'],
   parse: function (str, Player) {
     if (!str.startsWith('/')) {
       this.message('[You]: ' + str);
@@ -12,15 +12,28 @@ const Commands = {
 
 
     // Commands
-    if (cmd == 'tp' && args.length == 3 && Methods.arrIsNum(Methods.arrToNum(args)) == true) {
-      // Command is 'tp', there are 3 arguments (x,y,z) && the array is comprised of numbers
-      Player.camera.position.set(...Methods.arrToNum(args)); //Spread lol
+    if (cmd == 'tp') {
+      if (args.length == 3 && Methods.arrIsNum(Methods.arrToNum(args)) == true) {
+        // Command is 'tp', there are 3 arguments (x,y,z) && the array is comprised of numbers
+        Player.camera.position.set(...Methods.arrToNum(args)); //Spread lol
 
-      this.message("[Game]: Teleported to " + (Methods.string(Methods.arrToNum(args))));
+        this.message("[Game]: Teleported to " + (Methods.string(Methods.arrToNum(args))));
+      } else {
+        this.message("[Game]: Invalid arguments, check your syntax and try again");
+      }
     }
 
     if (cmd == 'fps') {
       this.message("[Game]: " + Player.fps + " fps");
+    }
+
+    if (cmd == 'speed') {
+      if(args.length == 1 && Methods.arrIsNum(Methods.arrToNum([args[0]])) == true){
+        Player.speed = Number(args[0]);
+        this.message("[Game]: Set speed to "+ args[0])
+      } else {
+        this.message("[Game]: Invalid argument - use a number")
+      }
     }
 
     if (cmd == 'pos') {
