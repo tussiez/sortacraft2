@@ -6,9 +6,11 @@ Voxel Engine
 
 const THREE = {
   MathUtils: {
-    euclideanModulo: function (c, a) { return (c % a + a) % a }
-  }
-}//euclidean modulo support
+    euclideanModulo: function (c, a) {
+      return (c % a + a) % a;
+    },
+  },
+}; //euclidean modulo support
 
 class VoxelWorld {
   constructor(options) {
@@ -37,7 +39,7 @@ class VoxelWorld {
       voxelX;
   }
   getCellForVoxel(x, y, z) {
-    return this.cells[this.computeCellId(x, y, z)]
+    return this.cells[this.computeCellId(x, y, z)];
   }
   setVoxel(x, y, z, v) {
     let cell = this.getCellForVoxel(x, y, z);
@@ -100,18 +102,18 @@ class VoxelWorld {
             const uvVoxel = voxel - 1;
             // There is a voxel here but do we need faces for it?
             const custom_blockType = this.getCustomBlockType(voxel);
-            const notHalfSelf = this.getCustomBlockType(voxel, true)
+            const notHalfSelf = this.getCustomBlockType(voxel, true);
             for (const { dir, corners, uvRow } of custom_blockType) {
               const neighbor = this.getVoxel(
                 voxelX + dir[0],
                 voxelY + dir[1],
-                voxelZ + dir[2]);
+                voxelZ + dir[2],
+              );
               const neighborTransparent = this.getTransparentVoxel(neighbor);
 
               //handle voxels
 
-              if (!neighbor||neighborTransparent&&!isTransparent) {
-
+              if (!neighbor || neighborTransparent && !isTransparent) {
                 // If no neighbor OR the neighbor is transparent
                 addFace(corners, dir, uvRow);
               }
@@ -123,11 +125,16 @@ class VoxelWorld {
                 normals.push(...dir);
                 uvs.push(
                   (uvVoxel + uv[0]) * tileSize / tileTextureWidth,
-                  1 - (uvRow + 1 - uv[1]) * tileSize / tileTextureHeight);
+                  1 - (uvRow + 1 - uv[1]) * tileSize / tileTextureHeight,
+                );
               }
               indices.push(
-                ndx, ndx + 1, ndx + 2,
-                ndx + 2, ndx + 1, ndx + 3,
+                ndx,
+                ndx + 1,
+                ndx + 2,
+                ndx + 2,
+                ndx + 1,
+                ndx + 3,
               );
             }
           }
@@ -226,129 +233,128 @@ class VoxelWorld {
   }
 }
 
-
 //faces
 VoxelWorld.faces = [
   { // left
     uvRow: 0,
-    dir: [-1, 0, 0,],
+    dir: [-1, 0, 0],
     corners: [
-      { pos: [0, 1, 0], uv: [0, 1], },
-      { pos: [0, 0, 0], uv: [0, 0], },
-      { pos: [0, 1, 1], uv: [1, 1], },
-      { pos: [0, 0, 1], uv: [1, 0], },
+      { pos: [0, 1, 0], uv: [0, 1] },
+      { pos: [0, 0, 0], uv: [0, 0] },
+      { pos: [0, 1, 1], uv: [1, 1] },
+      { pos: [0, 0, 1], uv: [1, 0] },
     ],
   },
   { // right
     uvRow: 0,
-    dir: [1, 0, 0,],
+    dir: [1, 0, 0],
     corners: [
-      { pos: [1, 1, 1], uv: [0, 1], },
-      { pos: [1, 0, 1], uv: [0, 0], },
-      { pos: [1, 1, 0], uv: [1, 1], },
-      { pos: [1, 0, 0], uv: [1, 0], },
+      { pos: [1, 1, 1], uv: [0, 1] },
+      { pos: [1, 0, 1], uv: [0, 0] },
+      { pos: [1, 1, 0], uv: [1, 1] },
+      { pos: [1, 0, 0], uv: [1, 0] },
     ],
   },
   { // bottom
     uvRow: 1,
-    dir: [0, -1, 0,],
+    dir: [0, -1, 0],
     corners: [
-      { pos: [1, 0, 1], uv: [1, 0], },
-      { pos: [0, 0, 1], uv: [0, 0], },
-      { pos: [1, 0, 0], uv: [1, 1], },
-      { pos: [0, 0, 0], uv: [0, 1], },
+      { pos: [1, 0, 1], uv: [1, 0] },
+      { pos: [0, 0, 1], uv: [0, 0] },
+      { pos: [1, 0, 0], uv: [1, 1] },
+      { pos: [0, 0, 0], uv: [0, 1] },
     ],
   },
   { // top
     uvRow: 2,
-    dir: [0, 1, 0,],
+    dir: [0, 1, 0],
     corners: [
-      { pos: [0, 1, 1], uv: [1, 1], },
-      { pos: [1, 1, 1], uv: [0, 1], },
-      { pos: [0, 1, 0], uv: [1, 0], },
-      { pos: [1, 1, 0], uv: [0, 0], },
+      { pos: [0, 1, 1], uv: [1, 1] },
+      { pos: [1, 1, 1], uv: [0, 1] },
+      { pos: [0, 1, 0], uv: [1, 0] },
+      { pos: [1, 1, 0], uv: [0, 0] },
     ],
   },
   { // back
     uvRow: 0,
-    dir: [0, 0, -1,],
+    dir: [0, 0, -1],
     corners: [
-      { pos: [1, 0, 0], uv: [0, 0], },
-      { pos: [0, 0, 0], uv: [1, 0], },
-      { pos: [1, 1, 0], uv: [0, 1], },
-      { pos: [0, 1, 0], uv: [1, 1], },
+      { pos: [1, 0, 0], uv: [0, 0] },
+      { pos: [0, 0, 0], uv: [1, 0] },
+      { pos: [1, 1, 0], uv: [0, 1] },
+      { pos: [0, 1, 0], uv: [1, 1] },
     ],
   },
   { // front
     uvRow: 0,
-    dir: [0, 0, 1,],
+    dir: [0, 0, 1],
     corners: [
-      { pos: [0, 0, 1], uv: [0, 0], },
-      { pos: [1, 0, 1], uv: [1, 0], },
-      { pos: [0, 1, 1], uv: [0, 1], },
-      { pos: [1, 1, 1], uv: [1, 1], },
+      { pos: [0, 0, 1], uv: [0, 0] },
+      { pos: [1, 0, 1], uv: [1, 0] },
+      { pos: [0, 1, 1], uv: [0, 1] },
+      { pos: [1, 1, 1], uv: [1, 1] },
     ],
   },
 ];
-VoxelWorld.faces_half = [//half block
+VoxelWorld.faces_half = [ //half block
   { // left
     uvRow: 0,
-    dir: [-1, 0, 0,],
+    dir: [-1, 0, 0],
     corners: [
-      { pos: [0, .5, 0], uv: [0, 1], },
-      { pos: [0, 0, 0], uv: [0, 0], },
-      { pos: [0, .5, 1], uv: [1, 1], },
-      { pos: [0, 0, 1], uv: [1, 0], },
+      { pos: [0, .5, 0], uv: [0, 1] },
+      { pos: [0, 0, 0], uv: [0, 0] },
+      { pos: [0, .5, 1], uv: [1, 1] },
+      { pos: [0, 0, 1], uv: [1, 0] },
     ],
   },
   { // right
     uvRow: 0,
-    dir: [1, 0, 0,],
+    dir: [1, 0, 0],
     corners: [
-      { pos: [1, .5, 1], uv: [0, 1], },
-      { pos: [1, 0, 1], uv: [0, 0], },
-      { pos: [1, .5, 0], uv: [1, 1], },
-      { pos: [1, 0, 0], uv: [1, 0], },
+      { pos: [1, .5, 1], uv: [0, 1] },
+      { pos: [1, 0, 1], uv: [0, 0] },
+      { pos: [1, .5, 0], uv: [1, 1] },
+      { pos: [1, 0, 0], uv: [1, 0] },
     ],
   },
   { // bottom
     uvRow: 1,
-    dir: [0, -1, 0,],
+    dir: [0, -1, 0],
     corners: [
-      { pos: [1, 0, 1], uv: [1, 0], },
-      { pos: [0, 0, 1], uv: [0, 0], },
-      { pos: [1, 0, 0], uv: [1, 1], },
-      { pos: [0, 0, 0], uv: [0, 1], },
+      { pos: [1, 0, 1], uv: [1, 0] },
+      { pos: [0, 0, 1], uv: [0, 0] },
+      { pos: [1, 0, 0], uv: [1, 1] },
+      { pos: [0, 0, 0], uv: [0, 1] },
     ],
   },
   { // top
     uvRow: 2,
-    dir: [0, 1, 0,],
+    dir: [0, 1, 0],
     corners: [
-      { pos: [0, .5, 1], uv: [1, 1], },
-      { pos: [1, .5, 1], uv: [0, 1], },
-      { pos: [0, .5, 0], uv: [1, 0], },
-      { pos: [1, .5, 0], uv: [0, 0], },
+      { pos: [0, .5, 1], uv: [1, 1] },
+      { pos: [1, .5, 1], uv: [0, 1] },
+      { pos: [0, .5, 0], uv: [1, 0] },
+      { pos: [1, .5, 0], uv: [0, 0] },
     ],
   },
   { // back
     uvRow: 0,
-    dir: [0, 0, -1,],
+    dir: [0, 0, -1],
     corners: [
-      { pos: [1, 0, 0], uv: [0, 0], },
-      { pos: [0, 0, 0], uv: [1, 0], },
-      { pos: [1, .5, 0], uv: [0, 1], },
-      { pos: [0, .5, 0], uv: [1, 1], },
+      { pos: [1, 0, 0], uv: [0, 0] },
+      { pos: [0, 0, 0], uv: [1, 0] },
+      { pos: [1, .5, 0], uv: [0, 1] },
+      { pos: [0, .5, 0], uv: [1, 1] },
     ],
   },
   { // front
     uvRow: 0,
-    dir: [0, 0, 1,],
+    dir: [0, 0, 1],
     corners: [
-      { pos: [0, 0, 1], uv: [0, 0], },
-      { pos: [1, 0, 1], uv: [1, 0], },
-      { pos: [0, .5, 1], uv: [0, 1], },
-      { pos: [1, .5, 1], uv: [1, 1], },
+      { pos: [0, 0, 1], uv: [0, 0] },
+      { pos: [1, 0, 1], uv: [1, 0] },
+      { pos: [0, .5, 1], uv: [0, 1] },
+      { pos: [1, .5, 1], uv: [1, 1] },
     ],
   },
 ];
