@@ -16,34 +16,27 @@ import ChunkGen from '/modules/ChunkGen.js';
 import Raycast from '/modules/Raycast.js'
 import Commands from '/modules/Commands.js';
 
-Commands.message = (msg) => postMessage(['message',msg])
+Commands.message = (msg) => postMessage(['message', msg])
 
 onmessage = function (e) {
   let command = e.data[0];
-  if (command == 'main') {
-    main(e.data)
+  if (handlers[command]) {
+    handlers[command](e.data)
+  } else {
+    console.warn('unknown command')
   }
-  if (command == 'keydown') {
-    keydown(e.data);
-  }
-  if (command == 'keyup') {
-    keyup(e.data);
-  }
-  if (command == 'mousemove') {
-    mousemove(e.data);
-  }
-  if (command == 'resize') {
-    resize(e.data);
-  }
-  if (command == 'mousedown') {
-    mousedown(e.data);
-  }
-  if (command == 'mouseup') {
-    mouseup(e.data);
-  }
-  if(command == 'playerCommand'){
-    playerCommand(e.data)
-  }
+}
+
+const handlers = {
+  pointerLock,
+  playerCommand,
+  main,
+  keydown,
+  keyup,
+  mousedown,
+  mouseup,
+  resize,
+  mousemove
 }
 
 // Variable
@@ -69,6 +62,7 @@ let ChunksIndex = [];
 let Player = {
   speed: .1,
   canCull: true,
+  canMove: false,
   maxReach: 8, // Cannot select things farther than X blocks away
   renderDist: 4 * cellSize,
   canLoad: true,
@@ -76,12 +70,12 @@ let Player = {
   selectedVoxel: 1,
   camera: undefined,
   fps: 0,
-  getFPS: function(){
+  getFPS: function () {
     let last = renderer.info.render.frame;
-    setTimeout(function(){
+    setTimeout(function () {
       Player.fps = renderer.info.render.frame - last;
       Player.getFPS();
-    },1000)
+    }, 1000)
   },
 }
 
@@ -89,32 +83,38 @@ function keydown(dat) {
   keys[dat[1].toLowerCase()] = true;
 
   let key = dat[1].toLowerCase();
-  if(key ==  '1'){
+  if (key == '1') {
     Player.selectedVoxel = 1;
   }
-  if(key == '2'){
+  if (key == '2') {
     Player.selectedVoxel = 46;
   }
-  if(key == '3'){
+  if (key == '3') {
     Player.selectedVoxel = 47;
   }
 }
 
 function mousedown(e) {
-  if (e[1] == 2) {
-    modifyChunk(Player.selectedVoxel);
-  }
-  if (e[1] == 0) {
-    modifyChunk(0); //Break block
+  if (Player.canMove == true) {
+    if (e[1] == 2) {
+      modifyChunk(Player.selectedVoxel);
+    }
+    if (e[1] == 0) {
+      modifyChunk(0); //Break block
+    }
   }
 }
 
-function playerCommand(e){
+function pointerLock(e) {
+  Player.canMove = e[1]
+}
+
+function playerCommand(e) {
   Commands.parse(e[1], Player);
 }
 
 function mouseup() {
- // Nothing
+  // Nothing
 }
 
 function keyup(dat) {
@@ -122,11 +122,13 @@ function keyup(dat) {
 }
 
 function mousemove(dat) {
-  // Mous movv
-  controls.look(dat[1], dat[2]);
+  if (Player.canMove == true) {
+    // Mous movv
+    controls.look(dat[1], dat[2]);
 
-  // Update pointer locattion
-  movePointer();
+    // Update pointer locattion
+    movePointer();
+  }
 }
 
 function resize(dat) {
@@ -149,7 +151,7 @@ function main(c) {
   controls = new PlayerControls(camera);
 
   geometryData = new GeometryData(new THREE.MeshBasicMaterial({
-    color:'gray',
+    color: 'gray',
     transparent: true,
     depthWrite: true,
     depthTest: true,
@@ -195,14 +197,12 @@ function main(c) {
 
   camera.position.set(32, 48, 32);
   camera.lookAt(new THREE.Vector3(16, 32, 16));
-  /*
-  Methods.WASMInitiateS().then(function(res){
+  Methods.WASMInitiateS().then(function (res) {
     console.log('Success!');
     render();
-  }).catch(function(err){
+  }).catch(function (err) {
     throw new Error("WASM initiation failed with error: " + err);
   });
-  */
 
 }
 
@@ -230,7 +230,7 @@ function idleLoad() {
   let maxZ = Math.floor(camera.position.z) + Player.renderDist;
   for (let i in ChunksIndex) {
     let c = Chunks[Methods.string(ChunksIndex[i])];
-    if (scene.children.includes(c.mesh)&&c.mesh.position.y < 32) {
+    if (scene.children.includes(c.mesh) && c.mesh.position.y < 32) {
       scene.remove(c.mesh);
     }
   }
@@ -279,27 +279,31 @@ function render() {
 
 
 function movePlayer() {
-  if (keys['w']) {
-    controls.forward(Player.speed);
-  }
-  if (keys['a']) {
-    controls.right(-Player.speed);
-  }
-  if (keys['s']) {
-    controls.forward(-Player.speed);
-  }
-  if (keys['d']) {
-    controls.right(Player.speed);
-  }
-  if (keys[' ']) {
-    camera.position.addScaledVector(new THREE.Vector3(0, 1, 0), Player.speed);
-  }
-  if (keys['shift'] == true) {
-    camera.position.addScaledVector(new THREE.Vector3(0, 1, 0), -Player.speed)
-  }
+  if (Player.canMove == true) {
 
-  if (keys['w'] || keys['a'] || keys['s'] || keys['d'] || keys[' '] || keys['shift'] == true) {
-    movePointer();
+    if (keys['w']) {
+      controls.forward(Player.speed);
+    }
+    if (keys['a']) {
+      controls.right(-Player.speed);
+    }
+    if (keys['s']) {
+      controls.forward(-Player.speed);
+    }
+    if (keys['d']) {
+      controls.right(Player.speed);
+    }
+    if (keys[' ']) {
+      camera.position.addScaledVector(new THREE.Vector3(0, 1, 0), Player.speed);
+    }
+    if (keys['shift'] == true) {
+      camera.position.addScaledVector(new THREE.Vector3(0, 1, 0), -Player.speed)
+    }
+
+    if (keys['w'] || keys['a'] || keys['s'] || keys['d'] || keys[' '] || keys['shift'] == true) {
+      movePointer();
+    }
+
   }
 }
 

@@ -6,7 +6,7 @@ const Alerts = {
     let wrapper = document.createElement("div");
     wrapper.setAttribute("id","alert" + alertNum);
     wrapper.style = "position:absolute;display:table; vertical-align:center;width:100%;height:100%;";
-    let parent = document.createElement("div");
+    const parent = document.createElement("div");
     parent.style = "display:table-cell;vertical-align:middle; text-align:center;";
     wrapper.appendChild(parent);
     let child = document.createElement("div");

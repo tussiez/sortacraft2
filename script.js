@@ -2,10 +2,19 @@
 // Handles workers/etc
 "use strict"; // strict
 
+import Alert from '/modules/Alerts2.js'
+Alert.msg(`
+<div style="margin:8px;padding:8px;">
+<h3>Controls</h3>
+<br>Click to lock your pointer, use WASD to move and mouse to look and set blocks.
+</div>
+`,10);
+
 const offscreen = document.getElementById('3d').transferControlToOffscreen();
 const canvas = document.getElementById('3d');
 let typingCommand = false;
 let typedCommand = '';
+let pointerLocked = false;
 let removing = 0;
 
 const worker = new Worker('main.js', { type: 'module' });
@@ -19,6 +28,12 @@ worker.onmessage = function (e) {
     makeMessage(e.data[1]);
   }
 }
+
+ document.addEventListener('pointerlockchange',() => {
+  pointerLocked = !pointerLocked;
+  worker.postMessage(['pointerLock',pointerLocked])
+}); //when become pointerlock
+
 
 function makeMessage(msg) {
   let div = document.createElement('div');
