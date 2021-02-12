@@ -5,43 +5,53 @@ It's.. SortaCraft
 @coauthor Baconman321
 */
 
-// Imports
-import * as THREE from "https://threejs.org/build/three.module.js";
-import Methods from "/modules/Methods.js";
-import PlayerControls from "/modules/PlayerControls.js";
-import VoxelWorld from "/modules/VoxelEngine.js";
-import GeometryData from "/modules/GeometryData.js";
-import ChunkGen from "/modules/ChunkGen.js";
-import Raycast from "/modules/Raycast.js";
-import Commands from "/modules/Commands.js";
 
-Commands.message = (msg) => postMessage(["message", msg]);
+// Imports
+import * as THREE from 'https://threejs.org/build/three.module.js';
+import Methods from '/modules/Methods.js';
+import PlayerControls from '/modules/PlayerControls.js';
+import VoxelWorld from '/modules/VoxelEngine.js';
+import GeometryData from '/modules/GeometryData.js';
+import ChunkGen from '/modules/ChunkGen.js';
+import Raycast from '/modules/Raycast.js'
+import Commands from '/modules/Commands.js';
+
+Commands.message = (msg) => postMessage(['message',msg])
 
 onmessage = function (e) {
   let command = e.data[0];
-  if(handlers[command]){
-    handlers[command](e.data)
+  if (command == 'main') {
+    main(e.data)
   }
-};
+  if (command == 'keydown') {
+    keydown(e.data);
+  }
+  if (command == 'keyup') {
+    keyup(e.data);
+  }
+  if (command == 'mousemove') {
+    mousemove(e.data);
+  }
+  if (command == 'resize') {
+    resize(e.data);
+  }
+  if (command == 'mousedown') {
+    mousedown(e.data);
+  }
+  if (command == 'mouseup') {
+    mouseup(e.data);
+  }
+  if(command == 'playerCommand'){
+    playerCommand(e.data)
+  }
+}
 
 // Variable
-
-const handlers = {
-  mousedown,
-  mouseup,
-  mousemove,
-  keydown,
-  keyup,
-  playerCommand,
-  load,
-  save,
-  main
-}
 
 let canvas,
   camera,
   scene,
-  keys = new Set(),
+  keys = [],
   controls,
   geometryData,
   cellSize = 32,
@@ -50,7 +60,6 @@ let canvas,
   tileTextureWidth = 752,
   tileTextureHeight = 48,
   localWorld,
-  chars = "abcdefghijklmnopqrstuvwxyz".split(""),
   emptyCell = new Uint8Array(cellSize * cellSize * cellSize),
   renderer;
 
@@ -60,9 +69,6 @@ let ChunksIndex = [];
 let Player = {
   speed: .1,
   canCull: true,
-  jumping: false,
-  velocity: 0,
-  edits: [],
   maxReach: 8, // Cannot select things farther than X blocks away
   renderDist: 4 * cellSize,
   canLoad: true,
@@ -70,28 +76,26 @@ let Player = {
   selectedVoxel: 1,
   camera: undefined,
   fps: 0,
-  render: true,
-  getFPS: function () {
+  getFPS: function(){
     let last = renderer.info.render.frame;
-    setTimeout(function () {
+    setTimeout(function(){
       Player.fps = renderer.info.render.frame - last;
       Player.getFPS();
-    }, 1000);
+    },1000)
   },
-};
+}
 
 function keydown(dat) {
-  keys.add(dat[1].toLowerCase());
+  keys[dat[1].toLowerCase()] = true;
 
-  // TEST CODE
   let key = dat[1].toLowerCase();
-  if (key == "1") {
+  if(key ==  '1'){
     Player.selectedVoxel = 1;
   }
-  if (key == "2") {
+  if(key == '2'){
     Player.selectedVoxel = 46;
   }
-  if (key == "3") {
+  if(key == '3'){
     Player.selectedVoxel = 47;
   }
 }
@@ -105,49 +109,16 @@ function mousedown(e) {
   }
 }
 
-function playerCommand(e) {
+function playerCommand(e){
   Commands.parse(e[1], Player);
 }
 
 function mouseup() {
-  // Nothing
-}
-
-function load(d) {
-  let s = d[1];
-  Player.seed = s.seed;
-  Player.canRender = false;
-  console.log("Loading..");
-  /*
-  for (let i in s.edits) {
-    let edit = s.edits[i];    
-    localWorld.setVoxel(...edit.position, edit.edit);
-    Player.edits.push(edit);
-  }
-  */
-  Player.edits = s.edits;
-  Player.canRender = true;
-}
-
-function save() {
-  Player.render = false;
-  console.log("Saving.. this may take a while");
-  let dat = {
-    seed: Player.seed,
-    edits: [],
-  };
-  for (let i in Player.edits) {
-    dat.edits.push({
-      position: Player.edits[i].position,
-      edit: Player.edits[i].type,
-    });
-  }
-  postMessage(["saveFile", JSON.stringify(dat)]);
-  Player.render = true; // Perf boost
+ // Nothing
 }
 
 function keyup(dat) {
-  keys.delete(dat[1].toLowerCase())
+  keys[dat[1].toLowerCase()] = false;
 }
 
 function mousemove(dat) {
@@ -166,49 +137,39 @@ function resize(dat) {
 
 function main(c) {
   canvas = c[1];
-  console.log("Loading");
+  console.log('Loading');
 
   scene = new THREE.Scene();
-  scene.background = new THREE.Color("gray");
-  scene.fog = new THREE.FogExp2("gray", .01);
+  scene.background = new THREE.Color('gray');
+  scene.fog = new THREE.FogExp2('gray', .01);
   camera = new THREE.PerspectiveCamera(70, c[2] / c[3], 0.1, 500);
   Player.camera = camera;
   renderer = new THREE.WebGLRenderer({ canvas: canvas });
   renderer.setSize(c[2], c[3], false); //false for offscreen
   controls = new PlayerControls(camera);
 
-  geometryData = new GeometryData(
-    new THREE.MeshBasicMaterial({
-      color: "gray",
-      transparent: true,
-      depthWrite: true,
-      depthTest: true,
-      alphaTest: .1,
-    }),
-  );
+  geometryData = new GeometryData(new THREE.MeshBasicMaterial({
+    color:'gray',
+    transparent: true,
+    depthWrite: true,
+    depthTest: true,
+    alphaTest: .1,
+  }));
 
   chunkGen = new ChunkGen();
-  chunkGen.setVoxelWorldParams(
-    cellSize,
-    tileSize,
-    tileTextureWidth,
-    tileTextureHeight,
-  );
+  chunkGen.setVoxelWorldParams(cellSize, tileSize, tileTextureWidth, tileTextureHeight);
 
-  geometryData.createWorld(
-    cellSize,
-    tileSize,
-    tileTextureWidth,
-    tileTextureHeight,
-  );
+
+  geometryData.createWorld(cellSize, tileSize, tileTextureWidth, tileTextureHeight);
 
   localWorld = new VoxelWorld({
     cellSize,
     tileSize,
     tileTextureWidth,
-    tileTextureHeight,
+    tileTextureHeight
   });
   Player.world = localWorld;
+
 
   geometryData.addMesh = function (mesh) {
     setChunk(mesh);
@@ -217,17 +178,12 @@ function main(c) {
   geometryData.updateMesh = function (geometry, position) {
     // Updated geometry
     updateChunk(geometry, position);
-  };
+  }
 
   chunkGen.onComplete = function (cell, coordinates) {
     localWorld.cells[Methods.string(coordinates)] = cell;
-    /*
-    for(let i in Player.edits){
-      localWorld.setVoxel(...Player.edits[i].position,Player.edits[i].edit)
-    }
-    */
     geometryData.getGeometry(cell, ...Methods.multiply(coordinates, cellSize));
-  };
+  }
 
   // X Y Z seed
 
@@ -236,22 +192,25 @@ function main(c) {
   createPointer();
   Player.getFPS();
 
+
   camera.position.set(32, 48, 32);
   camera.lookAt(new THREE.Vector3(16, 32, 16));
-
-  Methods.WASMInitiateS().then(function (res) {
-    console.log("Success!");
+  /*
+  Methods.WASMInitiateS().then(function(res){
+    console.log('Success!');
     render();
-  }).catch(function (err) {
+  }).catch(function(err){
     throw new Error("WASM initiation failed with error: " + err);
   });
+  */
+
 }
 
 function createPointer() {
   Player.pointer = new THREE.Mesh(
     new THREE.BoxGeometry(1, 1, 1),
     new THREE.MeshBasicMaterial({
-      color: "white",
+      color: 'white',
       wireframe: true,
       transparent: true,
       opacity: 1,
@@ -259,7 +218,7 @@ function createPointer() {
       depthTest: true,
       polygonOffsetFactor: 1,
       polygonOffsetUnits: 0.1,
-    }),
+    })
   );
   scene.add(Player.pointer);
 }
@@ -271,43 +230,33 @@ function idleLoad() {
   let maxZ = Math.floor(camera.position.z) + Player.renderDist;
   for (let i in ChunksIndex) {
     let c = Chunks[Methods.string(ChunksIndex[i])];
-    if (scene.children.includes(c.mesh) && c.mesh.position.y < 32) {
+    if (scene.children.includes(c.mesh)&&c.mesh.position.y < 32) {
       scene.remove(c.mesh);
     }
   }
   for (let x = minX; x < maxX; x += cellSize) {
     for (let z = minZ; z < maxZ; z += cellSize) {
-      let roundCoord = Methods.multiply(
-        Methods.arr(localWorld.computeCellId(x, 0, z)),
-        cellSize,
-      );
+      let roundCoord = Methods.multiply(Methods.arr(localWorld.computeCellId(x, 0, z)), cellSize);
       if (!Chunks[Methods.string(roundCoord)] && Player.canLoad == true) {
         // Chunk does not exist, should create one
         Player.canLoad = false;
-        chunkGen.generateChunk(
-          ...Methods.divide(roundCoord, cellSize),
-          Player.seed,
-        );
+        chunkGen.generateChunk(...Methods.divide(roundCoord, cellSize), Player.seed);
       }
 
       // Cull operation
       let chunk = Chunks[Methods.string(roundCoord)];
-      if (
-        chunk != undefined && chunk.culled == false && Player.canCull == true &&
-        Player.canLoad == true
-      ) {
+      if (chunk != undefined && chunk.culled == false && Player.canCull == true && Player.canLoad == true) {
         let fwd = Chunks[Methods.sub(roundCoord, [cellSize, 0, 0])];
         let bwd = Chunks[Methods.sub(roundCoord, [-cellSize, 0, 0])];
         let l = Chunks[Methods.sub(roundCoord, [0, 0, cellSize])];
         let r = Chunks[Methods.sub(roundCoord, [0, 0, -cellSize])];
-        if (
-          fwd != undefined && bwd != undefined && l != undefined &&
-          r != undefined
-        ) {
+        if (fwd != undefined && bwd != undefined && l != undefined && r != undefined) {
           // Can cull
           Player.canCull = false;
           chunk.culled = true;
           geometryData.getGeometry(chunk.voxels, ...roundCoord, true);
+
+
         }
       }
       if (chunk != undefined) {
@@ -315,7 +264,9 @@ function idleLoad() {
           scene.add(chunk.mesh);
         }
       }
+
     }
+
   }
 }
 
@@ -323,55 +274,32 @@ function render() {
   requestAnimationFrame(render);
   movePlayer();
   idleLoad();
-  if (Player.render == true) {
-    renderer.render(scene, camera);
-  }
+  renderer.render(scene, camera);
 }
 
-function movePlayer() {
-  let previousPosition = new THREE.Vector3().copy(camera.position);
 
-  if (keys.has('w')) {
+function movePlayer() {
+  if (keys['w']) {
     controls.forward(Player.speed);
   }
-  if (keys.has('a')) {
+  if (keys['a']) {
     controls.right(-Player.speed);
   }
-  if (keys.has('s')) {
+  if (keys['s']) {
     controls.forward(-Player.speed);
   }
-  if (keys.has('d')) {
+  if (keys['d']) {
     controls.right(Player.speed);
   }
-  if (keys.has(' ')) {
-    if (Player.jumping == false) {
-      Player.jumping = true;
-      Player.velocity = -.5;
-    }
+  if (keys[' ']) {
+    camera.position.addScaledVector(new THREE.Vector3(0, 1, 0), Player.speed);
+  }
+  if (keys['shift'] == true) {
+    camera.position.addScaledVector(new THREE.Vector3(0, 1, 0), -Player.speed)
   }
 
-  if (
-    keys.has('w') || keys.has('a') || keys.has('s') || keys.has('d') || keys.has(' ') ||
-    keys.has('shift') == true) {
+  if (keys['w'] || keys['a'] || keys['s'] || keys['d'] || keys[' '] || keys['shift'] == true) {
     movePointer();
-  }
-  if (Player.velocity < .3) {
-    Player.velocity += 0.06;
-  }
-  let localChunk =
-    (Methods.multiply(
-      Methods.floor(Methods.divide(Methods.spread(camera.position), cellSize)),
-      cellSize,
-    ));
-  localChunk[1] = 0;
-  localChunk = String(localChunk.toString());
-  if (Chunks[localChunk]) {
-    camera.position.y -= Player.velocity;
-  }
-  if (Raycast.fromCamera(Player) == true) {
-    let diff = Methods.negate(previousPosition.sub(camera.position));
-    camera.position.copy(new THREE.Vector3().copy(camera.position).sub(diff));
-    Player.jumping = false;
   }
 }
 
@@ -387,6 +315,7 @@ function setChunk(mesh) {
   ChunksIndex.push(Methods.string(Methods.spread(position)));
   Player.canLoad = true;
   scene.add(mesh);
+
 }
 
 function updateChunk(geometry, position) {
@@ -418,18 +347,9 @@ function modifyChunk(type) {
     if (intersection[1] < 1000) { // Below chunk height limit
       localWorld.setVoxel(...intersection, type);
       let cell = localWorld.getCellForVoxel(...intersection);
-      let position = Methods.multiply(
-        Methods.arr(localWorld.computeCellId(...intersection)),
-        cellSize,
-      );
+      let position = Methods.multiply(Methods.arr(localWorld.computeCellId(...intersection)), cellSize);
       let floorPos = Methods.floor(position);
       let localPos = Methods.sub(Methods.floor(intersection), position);
-
-      // Set modification for world save
-      Player.edits.push({
-        position: intersection,
-        type,
-      });
       geometryData.getGeometry(cell, ...position, true);
       if (posInCorner(...localPos)) {
         // Corner, update neighboring chunks to prevent invisible chunk
@@ -439,20 +359,19 @@ function modifyChunk(type) {
           bwd: Methods.sub(floorPos, [-cellSize, 0, 0]),
           left: Methods.sub(floorPos, [0, 0, cellSize]),
           right: Methods.sub(floorPos, [0, 0, -cellSize]),
-        };
+        }
         let fwd = Chunks[positions.fwd];
         let bwd = Chunks[positions.bwd];
         let l = Chunks[positions.left];
         let r = Chunks[positions.right];
-        if (
-          fwd != undefined && bwd != undefined && l != undefined &&
-          r != undefined
-        ) {
+        if (fwd != undefined && bwd != undefined && l != undefined && r != undefined) {
           geometryData.getGeometry(fwd.voxels, ...positions.fwd, true);
           geometryData.getGeometry(bwd.voxels, ...positions.bwd, true);
           geometryData.getGeometry(l.voxels, ...positions.left, true);
           geometryData.getGeometry(r.voxels, ...positions.right, true);
         }
+
+
       }
       movePointer(); // Update pointer
     }
@@ -460,13 +379,31 @@ function modifyChunk(type) {
 }
 
 function posInCorner(x, y, z) {
-  if (
-    x == 0 || y == 0 || z == 0 || x == cellSize - 1 || y == cellSize - 1 ||
-    z == cellSize - 1
-  ) {
-    return true;
+  if (x == 0 || y == 0 || z == 0 || x == cellSize - 1 || y == cellSize - 1 || z == cellSize - 1) return true;
+}
+/*
+function intersectPlayer(type) {
+  let start = new THREE.Vector3();
+  let end = new THREE.Vector3();
+  let dir = new THREE.Vector3();
+  start.setFromMatrixPosition(camera.matrixWorld);
+  end.set(0, 0, 1).unproject(camera);
+
+  dir.subVectors(end, start).normalize();
+
+  end.copy(start);
+  end.addScaledVector(dir, Player.maxReach);
+
+  const intersection = localWorld.intersectRay(start, end);
+
+  if (intersection) {
+    const pos = intersection.position.map(function (v, ndx) {
+      return v + intersection.normal[ndx] * (type > 0 ? 0.5 : -0.5)
+    })
+    return pos;
   }
 }
+*/
 
 function intersectPlayerSelf() {
   let start = new THREE.Vector3().copy(camera.position);

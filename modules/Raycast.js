@@ -3,15 +3,10 @@ Raycast
 Used to do raycasting on the voxel world
 @author tussiez
 */
-import { Vector3 } from "./three.js";
+import {Vector3} from './three.js'
 
 const Raycast = {
-  fromCamera: function (Player) {
-    let start = new Vector3().copy(Player.camera.position);
-    const intersection = Player.world.intersectRay(start, start);
-    if (intersection) return true;
-  },
-  fromPlayer: function (type, Player) {
+  fromPlayer: function (type,Player) {
     let start = new Vector3();
     let end = new Vector3();
     let dir = new Vector3();
@@ -27,11 +22,12 @@ const Raycast = {
 
     if (intersection) {
       const pos = intersection.position.map(function (v, ndx) {
-        return v + intersection.normal[ndx] * (type > 0 ? 0.5 : -0.5);
-      });
+        return v + intersection.normal[ndx] * (type > 0 ? 0.5 : -0.5)
+      })
       return pos;
     }
   },
-};
+
+}
 
 export default Raycast;
