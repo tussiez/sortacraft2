@@ -1,6 +1,6 @@
 import Alerts from "./modules/alerts.js";
 function ready() {
-  /*Not really needed since repl now redirects to https! :D*/
+  /*Not really needed since repl now redirects to https! :D Or does it....*/
   // if(location.protocol === "https"){
   //   Alerts.alert("You are using 'http'. To get the full experience, you need to use the 'https' version. Click <a href='https://" + location.host + "'>here</a> to redirect to the secure version.");
   // }

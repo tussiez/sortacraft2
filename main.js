@@ -3,6 +3,7 @@ SortaCraft
 It's.. SortaCraft
 @author tussiez
 @coauthor Baconman321
+@coauthor xxpertHacker
 */
 
 // Imports
@@ -19,8 +20,8 @@ Commands.message = (msg) => postMessage(["message", msg]);
 
 onmessage = function (e) {
   let command = e.data[0];
-  if(handlers[command]){
-    handlers[command](e.data)
+  if (handlers[command]) {
+    handlers[command](e.data);
   }
 };
 
@@ -35,8 +36,8 @@ const handlers = {
   playerCommand,
   load,
   save,
-  main
-}
+  main,
+};
 
 let canvas,
   camera,
@@ -147,7 +148,7 @@ function save() {
 }
 
 function keyup(dat) {
-  keys.delete(dat[1].toLowerCase())
+  keys.delete(dat[1].toLowerCase());
 }
 
 function mousemove(dat) {
@@ -239,12 +240,7 @@ function main(c) {
   camera.position.set(32, 48, 32);
   camera.lookAt(new THREE.Vector3(16, 32, 16));
 
-  Methods.WASMInitiateS().then(function (res) {
-    console.log("Success!");
-    render();
-  }).catch(function (err) {
-    throw new Error("WASM initiation failed with error: " + err);
-  });
+  Promise.resolve().then(render);
 }
 
 function createPointer() {
@@ -331,47 +327,31 @@ function render() {
 function movePlayer() {
   let previousPosition = new THREE.Vector3().copy(camera.position);
 
-  if (keys.has('w')) {
+  if (keys.has("w")) {
     controls.forward(Player.speed);
   }
-  if (keys.has('a')) {
+  if (keys.has("a")) {
     controls.right(-Player.speed);
   }
-  if (keys.has('s')) {
+  if (keys.has("s")) {
     controls.forward(-Player.speed);
   }
-  if (keys.has('d')) {
+  if (keys.has("d")) {
     controls.right(Player.speed);
   }
-  if (keys.has(' ')) {
-    if (Player.jumping == false) {
-      Player.jumping = true;
-      Player.velocity = -.5;
-    }
+  if (keys.has(" ")) {
+    camera.position.addScaledVector(new THREE.Vector3(0, 1, 0), Player.speed);
+  }
+  if (keys.has("shift")) {
+    camera.position.addScaledVector(new THREE.Vector3(0, 1, 0), -Player.speed);
   }
 
   if (
-    keys.has('w') || keys.has('a') || keys.has('s') || keys.has('d') || keys.has(' ') ||
-    keys.has('shift') == true) {
+    keys.has("w") || keys.has("a") || keys.has("s") || keys.has("d") ||
+    keys.has(" ") ||
+    keys.has("shift") == true
+  ) {
     movePointer();
-  }
-  if (Player.velocity < .3) {
-    Player.velocity += 0.06;
-  }
-  let localChunk =
-    (Methods.multiply(
-      Methods.floor(Methods.divide(Methods.spread(camera.position), cellSize)),
-      cellSize,
-    ));
-  localChunk[1] = 0;
-  localChunk = String(localChunk.toString());
-  if (Chunks[localChunk]) {
-    camera.position.y -= Player.velocity;
-  }
-  if (Raycast.fromCamera(Player) == true) {
-    let diff = Methods.negate(previousPosition.sub(camera.position));
-    camera.position.copy(new THREE.Vector3().copy(camera.position).sub(diff));
-    Player.jumping = false;
   }
 }
 

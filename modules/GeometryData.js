@@ -1,39 +1,40 @@
 /*
+Run as worker
 Handles geometry data to/from GeometryDataWorker
-Creates objects, loads texture
+Makes it easier to generate geometries
 @author tussiez
+@coauthor xxpertHacker
 */
 
 import * as THREE from "../modules/three.js";
 import Methods from "../modules/Methods.js";
-function GeometryData(material) {
-  let scope = this;
-  this.worker = new Worker("modules/GeometryDataWorker.js", { type: "module" });
-  this.material = material;
-  this.texture = new THREE.ImageBitmapLoader();
-  this.texture.setOptions({ imageOrientation: "flipY" });
-  this.texture.load(
-    "../resources/img/textures.png",
-    function (bitmap) {
-      scope.texture = new THREE.CanvasTexture(bitmap);
-      console.log(bitmap.width);
-      scope.texture.minFilter = THREE.NearestFilter;
-      scope.texture.magFilter = THREE.NearestFilter;
-      scope.material.map = scope.texture;
-    },
-    undefined,
-    function (err) {
-      console.log(err);
-    },
-  );
-  this.onGeometryUpdate = function (positions, normals, uvs, indices, x, y, z) {
+
+const { Worker, Float32Array, console } = globalThis;
+
+class GeometryData {
+  worker = new Worker("modules/GeometryDataWorker.js", {
+    type: "module",
+  });
+
+  texture = new THREE.ImageBitmapLoader();
+
+  onGeometryUpdate(
+    positions,
+    normals,
+    uvs,
+    indices,
+    x,
+    y,
+    z,
+  ) {
     this.updateMesh(
       this.setGeometry(positions, normals, uvs, indices),
       new THREE.Vector3(x, y, z),
     );
-  };
-  this.setGeometry = function (positions, normals, uvs, indices) {
-    let geometry = new THREE.BufferGeometry();
+  }
+
+  setGeometry(positions, normals, uvs, indices) {
+    const geometry = new THREE.BufferGeometry();
 
     geometry.setAttribute(
       "position",
@@ -60,22 +61,25 @@ function GeometryData(material) {
     );
     geometry.setIndex(indices);
     geometry.computeBoundingSphere();
+
     return geometry;
-  };
-  this.onGeometry = function (positions, normals, uvs, indices, x, y, z) {
+  }
+
+  onGeometry(positions, normals, uvs, indices, x, y, z) {
     // Got geometry, create chunk
-    let geometry = this.setGeometry(positions, normals, uvs, indices);
-    let mesh = this.makeMesh(geometry, new THREE.Vector3(x, y, z));
+    const geometry = this.setGeometry(positions, normals, uvs, indices);
+    const mesh = this.makeMesh(geometry, new THREE.Vector3(x, y, z));
     this.addMesh(mesh);
-  };
+  }
 
-  this.makeMesh = function (geometry, position) {
-    let mesh = new THREE.Mesh(geometry, this.material);
+  makeMesh(geometry, position) {
+    const mesh = new THREE.Mesh(geometry, this.material);
     mesh.position.set(...Methods.spread(position));
-    return mesh;
-  };
 
-  this.createWorld = function (
+    return mesh;
+  }
+
+  createWorld(
     cellSize,
     tileSize,
     tileTextureWidth,
@@ -88,37 +92,69 @@ function GeometryData(material) {
       tileTextureWidth,
       tileTextureHeight,
     ]);
-  };
-  this.getGeometry = function (voxels, x, y, z, update) {
-    if (update == undefined || update == false) {
-      this.worker.postMessage(["geometrydata", x, y, z, voxels]);
-    } else {
-      this.worker.postMessage(["geometrydata2", x, y, z, voxels]);
-    }
-  };
-  this.worker.onmessage = function (e) {
-    if (e.data[0] == "geometrydata") {
-      scope.onGeometry(
-        e.data[1].positions,
-        e.data[1].normals,
-        e.data[1].uvs,
-        e.data[1].indices,
-        e.data[2],
-        e.data[3],
-        e.data[4],
+  }
+
+  getGeometry(voxels, x, y, z, update) {
+    const message = undefined == update || false == update
+      ? "geometrydata"
+      : "geometrydata2";
+
+    this.worker.postMessage([message, x, y, z, voxels]);
+  }
+
+  constructor(material) {
+    this.material = material;
+    {
+      const { texture } = this;
+      texture.setOptions({ imageOrientation: "flipY" });
+      texture.load(
+        "../resources/img/textures.png",
+        (bitmap) => {
+          const texture = this.texture = new THREE.CanvasTexture(bitmap);
+          console.log(bitmap.width);
+          texture.magFilter = texture.minFilter = THREE.NearestFilter;
+          material.map = texture;
+        },
+        undefined,
+        console.error,
       );
     }
-    if (e.data[0] == "geometrydata2") {
-      scope.onGeometryUpdate(
-        e.data[1].positions,
-        e.data[1].normals,
-        e.data[1].uvs,
-        e.data[1].indices,
-        e.data[2],
-        e.data[3],
-        e.data[4],
-      );
-    }
-  };
+
+    this.worker.onmessage = ({ data }) => {
+      // captures [this]
+      const [op, voxels, x, y, z] = data;
+      let key = "";
+
+      switch (op) {
+        default: {
+          break;
+        }
+        case "geometrydata": {
+          key = "onGeometry";
+          // fall through
+        }
+        case "geometrydata2": {
+          key = "onGeometryUpdate";
+
+          {
+            const { positions, normals, uvs, indices } = voxels;
+
+            this[key](
+              positions,
+              normals,
+              uvs,
+              indices,
+              x,
+              y,
+              z,
+            );
+          }
+
+          break;
+        }
+      }
+    };
+  }
 }
+
 export default GeometryData;
