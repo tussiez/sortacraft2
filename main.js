@@ -47,6 +47,7 @@ let canvas,
   keys = [],
   controls,
   geometryData,
+  fogDensityMult = 1.5,
   cellSize = 32,
   tileSize = 16,
   chunkGen,
@@ -76,7 +77,7 @@ let Player = {
       Player.fps = renderer.info.render.frame - last;
       Player.getFPS();
     }, 1000)
-  },
+  }
 }
 
 function keydown(dat) {
@@ -143,7 +144,8 @@ function main(c) {
 
   scene = new THREE.Scene();
   scene.background = new THREE.Color('gray');
-  scene.fog = new THREE.FogExp2('gray', .01);
+  console.log(fogDensityMult/Player.renderDist)
+  scene.fog = new THREE.FogExp2('gray', fogDensityMult/Player.renderDist);
   camera = new THREE.PerspectiveCamera(70, c[2] / c[3], 0.1, 500);
   Player.camera = camera;
   renderer = new THREE.WebGLRenderer({ canvas: canvas });
@@ -228,9 +230,11 @@ function idleLoad() {
   let maxX = Math.floor(camera.position.x) + Player.renderDist;
   let minZ = Math.floor(camera.position.z) - Player.renderDist;
   let maxZ = Math.floor(camera.position.z) + Player.renderDist;
+  let minY = Math.floor(camera.position.y) - Player.renderDist;
+  let maxY = Math.floor(camera.position.y) + Player.renderDist;
   for (let i in ChunksIndex) {
     let c = Chunks[Methods.string(ChunksIndex[i])];
-    if (scene.children.includes(c.mesh) && c.mesh.position.y < 32) {
+    if (scene.children.includes(c.mesh)) {
       scene.remove(c.mesh);
     }
   }
@@ -259,9 +263,13 @@ function idleLoad() {
 
         }
       }
-      if (chunk != undefined) {
-        if (!scene.children.includes(chunk.mesh)) {
-          scene.add(chunk.mesh);
+      for (let y = minY; y < maxY; y += cellSize) {
+        let rounded2 = Methods.multiply(Methods.arr(localWorld.computeCellId(x,y,z)),cellSize);
+        let chunk2 = Chunks[Methods.string(rounded2)];
+        if (chunk2 != undefined) {
+          if (!scene.children.includes(chunk2.mesh)) {
+            scene.add(chunk2.mesh);
+          }
         }
       }
 

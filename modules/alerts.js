@@ -4,7 +4,7 @@ let alertNum = 0;
 const Alerts = {
   alert: function (msg) {
     let wrapper = document.createElement("div");
-    wrapper.setAttribute("id","alert" + alertNum);
+    wrapper.setAttribute("id", "alert" + alertNum);
     wrapper.style = "position:absolute;display:table; vertical-align:center;width:100%;height:100%;";
     const parent = document.createElement("div");
     parent.style = "display:table-cell;vertical-align:middle; text-align:center;";
@@ -14,15 +14,15 @@ const Alerts = {
     child.innerHTML = "<h1 style='margin-top:5px;margin-bottom:3px;text-align:center;'>Alert!</h1><p style='margin-top:5px;margin-left:10px;color:gray;'>" + msg + "</p><div style='text-align:center;'><button id='dismissAlert" + alertNum + "' style='background-color:lightblue;bottom:4px;right:50px;width:30%;height:30px;color:white;border-radius:1px;border:none;margin-bottom:6px;'>Ok</button></div>";
     parent.appendChild(child);
     document.body.appendChild(wrapper);
-    document.getElementById("dismissAlert" + alertNum).addEventListener("click",function(){
+    document.getElementById("dismissAlert" + alertNum).addEventListener("click", function () {
       child.style.transform = "translateY(5px)";
-      window.setTimeout(function(){
+      window.setTimeout(function () {
         child.style.opacity = "0";
         child.style.transform = "translateY(-5px)";
-        window.setTimeout(function(){
+        window.setTimeout(function () {
           wrapper.remove();
-        },100);
-      },100);
+        }, 100);
+      }, 100);
     });
   },
   alertBanner: function (msg, backgroundColor, opacity, zIndex, timeToShow/*In seconds*/) {
@@ -40,6 +40,35 @@ const Alerts = {
     window.setTimeout(function () {
       banner.remove();
     }, timeToShow);
+  },
+  msgHTML: function (content, timeout) {
+    let div = document.createElement('div');
+    let inner = document.createElement('inner');
+    div.appendChild(inner);
+    inner.setAttribute('style', 'margin:8px;padding:8px;');
+    inner.innerHTML = content;
+    div.setAttribute('style', 'height:30%;width:30%;background-color:#333;color:white;position:absolute;left:35%;top:35%;opacity:0;border-radius:5px;transition:opacity 0.2s ease,transform 0.3s ease;');
+    document.body.appendChild(div);
+    div.addEventListener('mousedown', hideEle);
+    function hideEle() {
+      div.style.opacity = '0';
+      div.style.transform = 'translateY(-30%)';
+      setTimeout(function () {
+        document.body.removeChild(div);
+      }, 500);
+    }
+    setTimeout(function () {
+      div.style.opacity = '1'
+      setTimeout(function () {
+        div.style.opacity = '0';
+        div.style.transform = 'translateY(-30%)';
+        setTimeout(function () {
+          if (div.parentNode == document.body) {
+            document.body.removeChild(div);
+          }
+        }, 500);
+      }, timeout * 1000)
+    }, 500);
   }
 };
 export default Alerts;

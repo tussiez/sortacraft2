@@ -30,6 +30,13 @@ const Methods = {
       return err;
     });
   },
+  average: function(arr){
+    let add = 0;
+    for(let i in arr){
+      add += arr[i];
+    } 
+    return add /= arr.length;
+  },
   arrToNum: function(arr){
     let a = [];
     for(let i in arr){
@@ -104,4 +111,5 @@ const Methods = {
     return vec;
   }
 }
+
 export default Methods;

@@ -2,16 +2,41 @@
 // Handles workers/etc
 "use strict"; // strict
 
-import Alert from '/modules/Alerts2.js'
-Alert.msg(`
-<div style="margin:8px;padding:8px;">
-<h3>Controls</h3>
-<br>Click to lock your pointer, use WASD to move and mouse to look and set blocks.
-</div>
-`,10);
-
+import Alerts from '/modules/alerts.js';
+//Msg (or Message) throws some errors sometimes, so I'm going to use alert for now.
+Alerts.msgHTML(`Controls: Use WSAD to move around and the mouse to move and place/break blocks.`,10);
+const perf = new PerformanceWatcher(100);
+const h1 = document.createElement("h1");
+let alertTimeout;
+const timeoutHandler = ()=>{
+  h1.remove();
+};
+perf.addEventListener("performanceAlert",(info)=>{
+  globalThis.clearTimeout(alertTimeout);
+  alertTimeout = globalThis.setTimeout(timeoutHandler,2000);
+  if(!document.getElementById("highCPUAlert")){
+    h1.title = "Your CPU usage might be affecting your game performance";
+    h1.id = "highCPUAlert";
+    h1.style = "color:orange;position:fixed;z-index:999;bottom:5px;left:20px;";
+    h1.textContent = "!";
+    document.body.appendChild(h1);
+  }
+});
+perf.takeSample().then((res)=>{
+  perf.measurePerformance();
+});
 const offscreen = document.getElementById('3d').transferControlToOffscreen();
 const canvas = document.getElementById('3d');
+//CHECK THE VENDOR!!! - baconman
+canvas.requestPointerLock = canvas.requestPointerLock || canvas.mozRequestPointerLock || canvas.webkitRequestPointerLock;
+document.addEventListener('pointerlockchange', changeCallback, false);
+//Again, vendor differences, so check vendor.
+document.addEventListener('mozpointerlockchange', changeCallback, false);
+document.addEventListener('webkitpointerlockchange', changeCallback, false);
+function changeCallback(){
+  pointerLocked = !pointerLocked;
+  worker.postMessage(['pointerLock',pointerLocked]);
+} //when become pointerlock
 let typingCommand = false;
 let typedCommand = '';
 let pointerLocked = false;
@@ -29,10 +54,6 @@ worker.onmessage = function (e) {
   }
 }
 
- document.addEventListener('pointerlockchange',() => {
-  pointerLocked = !pointerLocked;
-  worker.postMessage(['pointerLock',pointerLocked])
-}); //when become pointerlock
 
 
 function makeMessage(msg) {
@@ -63,7 +84,10 @@ canvas.addEventListener('mousemove', function (e) {
 
 canvas.addEventListener('mousedown', function (e) {
   if (typingCommand == false) {
-    canvas.requestPointerLock(); //pointerlock
+    //Locks every time for some reason (fixed) - baconman321
+    if(!pointerLocked){
+      canvas.requestPointerLock(); //pointerlock
+    }
     worker.postMessage(['mousedown', e.button]);
   }
 });

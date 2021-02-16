@@ -68,6 +68,9 @@ class VoxelWorld {
   getTransparentVoxel(voxel) {
     if (voxel == 46) return true;
   }
+  getWater(voxel) { // Just in case
+    if (voxel == 4) return true;
+  }
   getCustomBlockType(voxel, typ) {
     if (typ == undefined || typ == true) {
       return VoxelWorld.faces;
@@ -93,6 +96,7 @@ class VoxelWorld {
           const voxelX = startX + x;
           const voxel = this.getVoxel(voxelX, voxelY, voxelZ);
           const isTransparent = this.getTransparentVoxel(voxel);
+          const isWater = this.getWater(voxel);
           var realX = rx + voxelX;
           var realZ = rz + voxelZ;
           if (voxel) {
@@ -107,12 +111,13 @@ class VoxelWorld {
                 voxelY + dir[1],
                 voxelZ + dir[2]);
               const neighborTransparent = this.getTransparentVoxel(neighbor);
+              const neighborWater = this.getWater(neighbor);
 
               //handle voxels
 
-              if (!neighbor||neighborTransparent&&!isTransparent) {
+              if (!neighbor || !isWater && neighborWater || isWater && !neighborWater || neighborTransparent && !isTransparent) {
 
-                // If no neighbor OR the neighbor is transparent
+                // If no neighbor OR the neighbor is transparent OR the neighbor is water and self is not water OR voxel is water and neighbor is not
                 addFace(corners, dir, uvRow);
               }
             }
