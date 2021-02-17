@@ -2,7 +2,7 @@
 // Handles workers/etc
 "use strict"; // strict
 
-import Alerts from '/modules/alerts.js';
+import * as Alerts from '/modules/alerts.js';
 //Msg (or Message) throws some errors sometimes, so I'm going to use alert for now.
 Alerts.msgHTML(`Controls: Use WSAD to move around and the mouse to move and place/break blocks.`,10);
 const perf = new PerformanceWatcher(100);

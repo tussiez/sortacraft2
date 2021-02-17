@@ -50,7 +50,7 @@ function GeometryData(material) {
   }
 
   this.makeMesh = function(geometry,position){
-    let mesh = new THREE.Mesh(geometry,this.material);
+    let mesh = new THREE.Mesh(geometry,this.material.clone());
     mesh.position.set(...Methods.spread(position));
     return mesh;
   }

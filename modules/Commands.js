@@ -1,10 +1,10 @@
 import Methods from '../modules/Methods.js'
 
 const Commands = {
-  supported: ['tp', 'pos', 'fps', 'help', 'speed'],
+  supported: ['tp', 'pos', 'fps', 'help', 'speed', 'seed', 'fog'],
   parse: function (str, Player) {
     if (!str.startsWith('/')) {
-      this.message('[You]: ' + str);
+      this.message('<You> ' + str);
       return;
     }; // Not a command
     let cmd = str.replace('/', '').split(' ')[0];
@@ -17,27 +17,41 @@ const Commands = {
         // Command is 'tp', there are 3 arguments (x,y,z) && the array is comprised of numbers
         Player.camera.position.set(...Methods.arrToNum(args)); //Spread lol
 
-        this.message("[Game]: Teleported to " + (Methods.string(Methods.arrToNum(args))));
+        this.message("<Game> Teleported to " + (Methods.string(Methods.arrToNum(args))));
       } else {
-        this.message("[Game]: Invalid arguments, check your syntax and try again");
+        this.message("<Game> Invalid arguments, check your syntax and try again");
       }
     }
 
     if (cmd == 'fps') {
-      this.message("[Game]: " + Player.fps + " fps");
+      this.message("<Game> " + Player.fps + " fps");
+    }
+
+    if(cmd == 'seed'){
+      this.message("<Game> Seed: " + Player.seed)
+    }
+
+    if(cmd == 'fog'){
+      if(args.length == 1 && !isNaN(Number(args[0]))){
+        Player.fogDensityMult = Number(args[0]);
+        Player.updateFog();
+      } else {
+        this.message("<Game> Fog: " + Player.fogDensityMult + ", set with /fog #");
+
+      }
     }
 
     if (cmd == 'speed') {
       if(args.length == 1 && Methods.arrIsNum(Methods.arrToNum([args[0]])) == true){
         Player.speed = Number(args[0]);
-        this.message("[Game]: Set speed to "+ args[0])
+        this.message("<Game> Set speed to "+ args[0])
       } else {
-        this.message("[Game]: Invalid argument - use a number")
+        this.message("<Game> Invalid argument - use a number")
       }
     }
 
     if (cmd == 'pos') {
-      this.message("[Game]: Your position is " + (
+      this.message("<Game> Your position is " + (
         Methods.string(
           Methods.arrToNum(
             Methods.floor(
@@ -52,11 +66,11 @@ const Commands = {
     }
 
     if (cmd == 'help') {
-      this.message("[Game]: Supported: " + Methods.string(this.supported))
+      this.message("<Game> Supported: " + Methods.string(this.supported))
     }
 
     if (!this.supported.includes(cmd)) {
-      this.message('[Game]: Unknown command - Try /help')
+      this.message('<Game> Unknown command - Try /help')
     }
   }
 }

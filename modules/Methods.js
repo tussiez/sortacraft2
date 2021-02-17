@@ -37,6 +37,11 @@ const Methods = {
     } 
     return add /= arr.length;
   },
+  //Srsly? "argz"? XD
+  // hmm
+	average2: (...argz) => argz.reduce(
+		(x, y) => x + y
+	) / argz.length,
   arrToNum: function(arr){
     let a = [];
     for(let i in arr){

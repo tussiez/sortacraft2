@@ -20,8 +20,8 @@ Commands.message = (msg) => postMessage(['message', msg])
 
 onmessage = function (e) {
   let command = e.data[0];
-  if (handlers[command]) {
-    handlers[command](e.data)
+  if (command in handlers) {
+    handlers[command](e.data);
   } else {
     console.warn('unknown command')
   }
@@ -47,23 +47,23 @@ let canvas,
   keys = [],
   controls,
   geometryData,
-  fogDensityMult = 1.5,
   cellSize = 32,
   tileSize = 16,
   chunkGen,
   tileTextureWidth = 752,
   tileTextureHeight = 48,
   localWorld,
-  emptyCell = new Uint8Array(cellSize * cellSize * cellSize),
   renderer;
 
-let Chunks = {};
-let ChunksIndex = [];
+const emptyCell = new Uint8Array(cellSize * cellSize * cellSize);
+const Chunks = {};
+const ChunksIndex = [];
 
 let Player = {
   speed: .1,
   canCull: true,
   canMove: false,
+  fogDensityMult: 1.5,
   maxReach: 8, // Cannot select things farther than X blocks away
   renderDist: 4 * cellSize,
   canLoad: true,
@@ -144,8 +144,10 @@ function main(c) {
 
   scene = new THREE.Scene();
   scene.background = new THREE.Color('gray');
-  console.log(fogDensityMult/Player.renderDist)
-  scene.fog = new THREE.FogExp2('gray', fogDensityMult/Player.renderDist);
+  Player.fog = scene.fog = new THREE.FogExp2('gray', Player.fogDensityMult/Player.renderDist);
+  Player.updateFog = () => {
+    scene.fog.density = Player.fogDensityMult/Player.renderDist;
+  }
   camera = new THREE.PerspectiveCamera(70, c[2] / c[3], 0.1, 500);
   Player.camera = camera;
   renderer = new THREE.WebGLRenderer({ canvas: canvas });
@@ -158,6 +160,7 @@ function main(c) {
     depthWrite: true,
     depthTest: true,
     alphaTest: .1,
+    opacity: 0,
   }));
 
   chunkGen = new ChunkGen();
@@ -267,8 +270,13 @@ function idleLoad() {
         let rounded2 = Methods.multiply(Methods.arr(localWorld.computeCellId(x,y,z)),cellSize);
         let chunk2 = Chunks[Methods.string(rounded2)];
         if (chunk2 != undefined) {
+          let distToCam = Math.floor(Methods.arrVec(rounded2).distanceTo(camera.position)/cellSize);
+          chunk2.mesh.renderOrder = distToCam;
           if (!scene.children.includes(chunk2.mesh)) {
             scene.add(chunk2.mesh);
+            if(chunk2.mesh.material.opacity < 1){
+              chunk2.mesh.material.opacity += 0.05;
+            }
           }
         }
       }

@@ -1,4 +1,5 @@
-import Alerts from "./modules/alerts.js";
+import * as Alerts from "./modules/alerts.js";
+
 function ready(){
   /*Not really needed since repl now redirects to https! :D*/
   // if(location.protocol === "https"){
