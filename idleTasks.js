@@ -1,8 +1,52 @@
 /*
   Deals with idle tasks and also checks monitors performance.
   @author baconman321
+  @coauthor xxpertHacker
 */
 // Note that this is NOT the best way to measure CPU usage and also doesn't take into account CPU usage of web workers and service workers... :/
+
+// should this be in Methods?
+const math = (() => {
+	// closure around these
+
+	const {
+		Math: { sign },
+		TypeError,
+		Int8Array: { __proto__: TypedArray }
+	} = globalThis
+
+	const assertIsNumber = unknown => {
+		if ("number" !== typeof unknown) {
+			throw new TypeError("Argument received is not a number");
+		}
+	};
+
+	const assertIsTypedArray = unknown => {
+		if (!(unknown instanceof TypedArray)) {
+			throw new TypeError("Argument received does not inherit from %TypedArray%");
+		}
+	};
+
+	const sum = (x, y) => x + y;
+
+	return {
+		isPositive: n => {
+			assertIsNumber(n);
+
+			return 1 === sign(n);
+		},
+		isNegative: n => {
+			assertIsNumber(n);
+
+			return -1 === sign(n);
+		},
+		average: typedArray => {
+			assertIsTypedArray(typedArray);
+
+			typedArray.reduce(sum) / typedArray.length;
+		}
+	};
+})();
 
 Math.isPositive = (num)=>{
   if(isNaN(num)) throw new TypeError("Argument given is not a number.");
@@ -22,18 +66,27 @@ Math.average = (arr)=>{
   });
   return num / arr.length;
 };
-//TODO: (Maybe) make the ability to measure performance increase/decrease.
-class PerformanceWatcher{
-  constructor(timesExceededLimit = 100){
+
+// TODO: (Maybe) make the ability to measure performance increase/decrease.
+class PerformanceWatcher {
+  constructor(timesExceededLimit = 100) {
     this.sample = [0];
     let isPaused = false;
     let tokenLength = 100;
+
+	// use a Map or WeakMap instead
+	// in fact, I think I could help do this, as I've thought about doing something similar to this before
+	// might be better as Map<DOMString, Set<VoidFunction>>
     const listeners = {};
     const idleTimeoutTime = 500;
+
+	// a..z + A..Z + 0..9
     const validChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
-    const genToken = ()=>{
+
+	// prefer making `genToken` a static property and passing in tokenLength as an argument
+    const genToken = ()=> {
       let token = "";
-      for(let i = 0;i<tokenLength;++i){
+      for (let i = 0; i <tokenLength; ++i){
         token += validChars[Math.floor(Math.random() * validChars.length)];
       }
       return token;
@@ -62,7 +115,8 @@ class PerformanceWatcher{
         }
       });
     };
-    //It might be slower though (because more is happening)...
+
+    // It might be slower though (because more is happening)...
     this.takeSampleAverage = (iter = 10)=>{
       return new Promise((res,rej)=>{
         let token = genToken();
@@ -104,7 +158,7 @@ class PerformanceWatcher{
         }
       });
     };
-    //A mimic to the DOM addEventListener function.
+    // A mimic to the DOM addEventListener function.
     this.addEventListener = (name,callback)=>{
       let undefArgs = 0;
       let requiredArgs = 2;
@@ -114,6 +168,7 @@ class PerformanceWatcher{
       if("undefined" === typeof callback){
         undefArgs++;
       }
+	  // are you trying to create WebIDL bindings between JS<->JS?
       if(undefArgs > requiredArgs){
         throw new TypeError(`Failed to execute addEventListener() on ${this.__proto__}, expected ${requiredArgs} arguments but got ${undefArgs} arguments instead.`);
       }

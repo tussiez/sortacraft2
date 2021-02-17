@@ -67,7 +67,7 @@ export const alert = (msg) => {
         const { style } = child;
 
         // Use keyframes ~ xxpertHacker
-        //I would still have to wait a few seconds because I need to delete it after or I will have a DOM pile build-upp
+        // I would still have to wait a few seconds because I need to delete it after or I will have a DOM pile build-upp
         style.transform = "translateY(5px)";
         await delay(0.1);
         style.opacity = "0";
@@ -97,6 +97,13 @@ export const alertBanner = async (
   banner.remove();
 };
 
+async function hideEle({ currentTarget: div }) {
+  div.style.opacity = "0";
+  div.style.transform = "translateY(-30%)";
+  await delay(0.5);
+  div.remove();
+}
+
 // timeout in seconds
 export const msgHTML = async (content, timeout) => {
   const div = document.createElement("div");
@@ -118,19 +125,14 @@ export const msgHTML = async (content, timeout) => {
 
   div.addEventListener("mousedown", hideEle);
 
-  async function hideEle() {
-    div.style.opacity = "0";
-    div.style.transform = "translateY(-30%)";
-    await delay(0.5);
-    div.remove();
-  }
+  const { style } = div;
 
   await delay(0.5);
-  div.style.opacity = "1";
+  style.opacity = "1";
 
   await delay(timeout);
-  div.style.opacity = "0";
-  div.style.transform = "translateY(-30%)";
+  style.opacity = "0";
+  style.transform = "translateY(-30%)";
 
   await delay(0.5);
   div.remove();

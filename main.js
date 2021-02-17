@@ -3,8 +3,8 @@ SortaCraft
 It's.. SortaCraft
 @author tussiez
 @coauthor Baconman321
+Worker
 */
-
 
 // Imports
 import * as THREE from 'https://threejs.org/build/three.module.js';
@@ -15,6 +15,8 @@ import GeometryData from '/modules/GeometryData.js';
 import ChunkGen from '/modules/ChunkGen.js';
 import Raycast from '/modules/Raycast.js'
 import Commands from '/modules/Commands.js';
+
+const { floor } = Math;
 
 Commands.message = (msg) => postMessage(['message', msg])
 
@@ -37,7 +39,7 @@ const handlers = {
   mouseup,
   resize,
   mousemove
-}
+};
 
 // Variable
 
@@ -55,7 +57,7 @@ let canvas,
   localWorld,
   renderer;
 
-const emptyCell = new Uint8Array(cellSize * cellSize * cellSize);
+const emptyCell = new Uint8Array(cellSize ** 3);
 const Chunks = {};
 const ChunksIndex = [];
 
@@ -67,7 +69,7 @@ let Player = {
   maxReach: 8, // Cannot select things farther than X blocks away
   renderDist: 4 * cellSize,
   canLoad: true,
-  seed: Math.floor(Math.random() * 99999),
+  seed: floor(Math.random() * 99999),
   selectedVoxel: 1,
   camera: undefined,
   fps: 0,
@@ -150,7 +152,7 @@ function main(c) {
   }
   camera = new THREE.PerspectiveCamera(70, c[2] / c[3], 0.1, 500);
   Player.camera = camera;
-  renderer = new THREE.WebGLRenderer({ canvas: canvas });
+  renderer = new THREE.WebGLRenderer({ canvas });
   renderer.setSize(c[2], c[3], false); //false for offscreen
   controls = new PlayerControls(camera);
 
@@ -166,7 +168,6 @@ function main(c) {
   chunkGen = new ChunkGen();
   chunkGen.setVoxelWorldParams(cellSize, tileSize, tileTextureWidth, tileTextureHeight);
 
-
   geometryData.createWorld(cellSize, tileSize, tileTextureWidth, tileTextureHeight);
 
   localWorld = new VoxelWorld({
@@ -176,7 +177,6 @@ function main(c) {
     tileTextureHeight
   });
   Player.world = localWorld;
-
 
   geometryData.addMesh = function (mesh) {
     setChunk(mesh);
@@ -228,19 +228,34 @@ function createPointer() {
   scene.add(Player.pointer);
 }
 
+// plus-minus
+function pm(x, y) {
+	return [ x + y, x - y ];
+}
+
 function idleLoad() {
-  let minX = Math.floor(camera.position.x) - Player.renderDist;
-  let maxX = Math.floor(camera.position.x) + Player.renderDist;
-  let minZ = Math.floor(camera.position.z) - Player.renderDist;
-  let maxZ = Math.floor(camera.position.z) + Player.renderDist;
-  let minY = Math.floor(camera.position.y) - Player.renderDist;
-  let maxY = Math.floor(camera.position.y) + Player.renderDist;
-  for (let i in ChunksIndex) {
-    let c = Chunks[Methods.string(ChunksIndex[i])];
-    if (scene.children.includes(c.mesh)) {
-      scene.remove(c.mesh);
+  camera.updateMatrix();
+  camera.updateMatrixWorld();
+  const frustum = new THREE.Frustum();
+  const projScreenMatrix = new THREE.Matrix4();
+  projScreenMatrix.multiplyMatrices( camera.projectionMatrix, camera.matrixWorldInverse);
+  frustum.setFromProjectionMatrix( camera.projectionMatrix );
+  // now check with frustrum.containsPoint(mesh.position)
+  const { x, y, z } = camera.position;
+  const { renderDist } = Player;
+  // floor( camera.position.{x, y, z} ) +- Player.renderDist
+  const [ maxX, minX ] = pm(floor(x), renderDist);
+  const [ maxY, minY ] = pm(floor(y), renderDist);
+  const [ maxZ, minZ ] = pm(floor(z), renderDist);
+
+  for (const chunk of ChunksIndex) {
+    const { mesh } = Chunks[Methods.string(chunk)];
+    if (scene.children.includes(mesh)) {
+		// remove if player cannot see chunk
+      scene.remove(mesh);
     }
   }
+
   for (let x = minX; x < maxX; x += cellSize) {
     for (let z = minZ; z < maxZ; z += cellSize) {
       let roundCoord = Methods.multiply(Methods.arr(localWorld.computeCellId(x, 0, z)), cellSize);
@@ -262,15 +277,14 @@ function idleLoad() {
           Player.canCull = false;
           chunk.culled = true;
           geometryData.getGeometry(chunk.voxels, ...roundCoord, true);
-
-
         }
       }
       for (let y = minY; y < maxY; y += cellSize) {
         let rounded2 = Methods.multiply(Methods.arr(localWorld.computeCellId(x,y,z)),cellSize);
         let chunk2 = Chunks[Methods.string(rounded2)];
         if (chunk2 != undefined) {
-          let distToCam = Math.floor(Methods.arrVec(rounded2).distanceTo(camera.position)/cellSize);
+          
+          let distToCam = floor(Methods.arrVec(rounded2).distanceTo(camera.position)/cellSize);
           chunk2.mesh.renderOrder = distToCam;
           if (!scene.children.includes(chunk2.mesh)) {
             scene.add(chunk2.mesh);
@@ -351,9 +365,9 @@ function updateChunk(geometry, position) {
 function movePointer() {
   let intersection = Raycast.fromPlayer(0, Player);
   if (intersection) {
-    intersection[0] = Math.floor(intersection[0]) + 0.5;
-    intersection[1] = Math.floor(intersection[1]) + 0.5;
-    intersection[2] = Math.floor(intersection[2]) + 0.5;
+    intersection[0] = floor(intersection[0]) + 0.5;
+    intersection[1] = floor(intersection[1]) + 0.5;
+    intersection[2] = floor(intersection[2]) + 0.5;
     Player.pointer.material.opacity = 1;
     Player.pointer.position.set(...intersection);
   } else {
@@ -401,29 +415,7 @@ function modifyChunk(type) {
 function posInCorner(x, y, z) {
   if (x == 0 || y == 0 || z == 0 || x == cellSize - 1 || y == cellSize - 1 || z == cellSize - 1) return true;
 }
-/*
-function intersectPlayer(type) {
-  let start = new THREE.Vector3();
-  let end = new THREE.Vector3();
-  let dir = new THREE.Vector3();
-  start.setFromMatrixPosition(camera.matrixWorld);
-  end.set(0, 0, 1).unproject(camera);
 
-  dir.subVectors(end, start).normalize();
-
-  end.copy(start);
-  end.addScaledVector(dir, Player.maxReach);
-
-  const intersection = localWorld.intersectRay(start, end);
-
-  if (intersection) {
-    const pos = intersection.position.map(function (v, ndx) {
-      return v + intersection.normal[ndx] * (type > 0 ? 0.5 : -0.5)
-    })
-    return pos;
-  }
-}
-*/
 
 function intersectPlayerSelf() {
   let start = new THREE.Vector3().copy(camera.position);
