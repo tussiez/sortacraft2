@@ -57,6 +57,7 @@ export const alert = (msg) => {
   // ditto, and don't use innerHTML, make a template and use Element#close() ~ xxpertHacker
   parent.appendChild(child);
   body.appendChild(wrapper);
+  ++alerts;
   // don't target by IDs, use elements directly from the template above ^ ~ xxpertHacker
   document
     .getElementById(`dismissAlert${alertNum}`)

@@ -2,6 +2,7 @@
 SortaCanvas
 JavaScript canvas library
 @author tussiez
+Unused code (for now). To be used in main thread with OffscreenCanvas
 */
 
 let SortaCanvas = {

@@ -1,6 +1,7 @@
 /*
 TWEEN.js
 Animation software
+Unused code, to be used somewhere
 */
 
 (function (global, factory) {

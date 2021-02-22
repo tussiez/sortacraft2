@@ -2,6 +2,7 @@
 GeometryDataWorker
 Handles geometry data generation, as a worker.
 @author tussiez
+Runs in worker ^
 */
 
 
@@ -32,7 +33,6 @@ onmessage = function (e) {
     makeGeometry(e);
   }
 }
-
 
 function makeGeometry(e) {
   let id = voxelWorld.computeCellId(e.data[1],e.data[2],e.data[3]);

@@ -2,6 +2,7 @@
 Voxel Engine
 @author threejsfundamentals
 @author tussiez
+Runs in main thread
 */
 
 const THREE = {
@@ -71,12 +72,9 @@ class VoxelWorld {
   getWater(voxel) { // Just in case
     if (voxel == 4) return true;
   }
-  getCustomBlockType(voxel, typ) {
-    if (typ == undefined || typ == true) {
-      return VoxelWorld.faces;
-    } else {
-      return false;
-    }
+  getCustomBlockType(voxel) {
+    if (voxel == 49) return VoxelWorld.grassFaces;
+    return VoxelWorld.faces;
   }
   generateGeometryDataForCell(cellX, cellY, cellZ, rx, ry, rz) {
     const { cellSize, tileSize, tileTextureWidth, tileTextureHeight } = this;
@@ -104,7 +102,7 @@ class VoxelWorld {
             const uvVoxel = voxel - 1;
             // There is a voxel here but do we need faces for it?
             const custom_blockType = this.getCustomBlockType(voxel);
-            const notHalfSelf = this.getCustomBlockType(voxel, true)
+            const isGrassType = custom_blockType == VoxelWorld.grassFaces ? true : false
             for (const { dir, corners, uvRow } of custom_blockType) {
               const neighbor = this.getVoxel(
                 voxelX + dir[0],
@@ -112,10 +110,10 @@ class VoxelWorld {
                 voxelZ + dir[2]);
               const neighborTransparent = this.getTransparentVoxel(neighbor);
               const neighborWater = this.getWater(neighbor);
-
+              const neighborGrass = this.getCustomBlockType(voxel) == VoxelWorld.grassFaces ? true : false;
               //handle voxels
 
-              if (!neighbor || !isWater && neighborWater || isWater && !neighborWater || neighborTransparent && !isTransparent) {
+              if (!neighbor || neighborGrass == true|| isGrassType == true || !isWater && neighborWater || isWater && !neighborWater || neighborTransparent && !isTransparent) {
 
                 // If no neighbor OR the neighbor is transparent OR the neighbor is water and self is not water OR voxel is water and neighbor is not
                 addFace(corners, dir, uvRow);
@@ -295,6 +293,33 @@ VoxelWorld.faces = [
     ],
   },
 ];
+
+// Grass type voxel
+VoxelWorld.grassFaces = [
+  { // left
+    uvRow: 0,
+    dir: [-1, 0, -1],
+    corners: [
+      { pos: [0, 1, 0], uv: [0, 1], },
+      { pos: [0, 0, 0], uv: [0, 0], },
+      { pos: [1, 1, 1], uv: [1, 1], },
+      { pos: [1, 0, 1], uv: [1, 0], },
+    ],
+  },
+  { // right
+    uvRow: 0,
+    dir: [1, 0, 1],
+    corners: [
+      { pos: [1, 1, 0], uv: [0, 0], },
+      { pos: [1, 0, 0], uv: [0, 0], },
+      { pos: [0, 1, 1], uv: [0, 0], },
+      { pos: [0, 0, 1], uv: [0, 0], },
+    ],
+  },
+
+
+];
+
 VoxelWorld.faces_half = [//half block
   { // left
     uvRow: 0,

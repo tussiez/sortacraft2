@@ -1,3 +1,10 @@
+/*
+Commands
+Basic game commands
+@author tussiez
+Runs in main thread
+*/
+
 import Methods from '../modules/Methods.js'
 
 const Commands = {
@@ -9,7 +16,6 @@ const Commands = {
     }; // Not a command
     let cmd = str.replace('/', '').split(' ')[0];
     let args = str.replace('/', '').split(' ').splice(1)
-
 
     // Commands
     if (cmd == 'tp') {

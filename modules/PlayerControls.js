@@ -5,6 +5,8 @@ Simplified version of PointerLockControls (https://threejs.org/examples/jsm/cont
 made for SortaCraft
 
 @author tussiez
+
+Runs in main thread
 */
 
 import {

@@ -2,19 +2,22 @@
 Methods
 Makes coding easier
 @author tussiez
+Runs in main thread
 */
 
-import {Vector3} from '../modules/three.js';
+import { Vector3 } from '../modules/three.js';
 import WASM from "./WASMLoader.js";
 let WASMSubtract;
 let WASMInitiated = false;
+let WASMHeap;
 let compiledErr;
 const Methods = {
-  WASMInitiate: function(){
+  WASMInitiate: function() {
     return WASM.compile("../WASM/Math/Math.wasm").then(function(res){
       WASMSubtract = res.subtractArrays;
+      WASMHeap = res.memory;
       WASMInitiated = true;
-    }).catch(function(err){
+    }).catch(function(err) {
       compiledErr = err;
       WASMInitiated = true;
     });
@@ -22,6 +25,7 @@ const Methods = {
   WASMInitiateS: function(){
     return WASM.compileS("../WASM/Math/Math.wasm").then(function(res){
       WASMSubtract = res.subtractArrays;
+      WASMHeap = res.memory
       WASMInitiated = true;
       return res;
     }).catch(function(err){
@@ -37,8 +41,6 @@ const Methods = {
     } 
     return add /= arr.length;
   },
-  //Srsly? "argz"? XD
-  // hmm
 	average2: (...argz) => argz.reduce(
 		(x, y) => x + y
 	) / argz.length,
@@ -76,24 +78,31 @@ const Methods = {
   sub: function(arr,ar2){
     return [arr[0]-ar2[0],arr[1]-ar2[1],arr[2]-ar2[2]];
   },
-  // DOESN'T WORK
+  // It works! Thanks xxpertHacker!
   WASMSub: function(arr1,arr2){
     /*Takes 2 arrays with 3 values in each array (must be a number) */
     if(!WASMInitiated){
-      throw new Error("\"WASMSub\" canot be used because the WASM has not been initiated.");
+      throw new Error("\"WASMSub\" cannot be used because the WASM has not been initiated.");
     }
-    if(typeof compiledErr !== typeof void 0 ){
+    if ( typeof compiledErr !== typeof void 0 ){
       throw new Error("\"WASMSub\" cannot be used because the WebAssembly compilation failed with an error: " + err);
     }
-    return WASMSubtract(arr1,arr2);
+    const buf = WASMHeap.buffer;
+    const a = new Float64Array(buf, 8, 4);
+    const b = new Float64Array(buf, 8 * a.BYTES_PER_ELEMENT, 4);
+    a.set(arr1);
+    b.set(arr2);
+    const offset = WASMSubtract(a.byteOffset, b.byteOffset);
+
+    return a.slice();
   },
-  multiply: function(arr,amt){
+  multiply: function(arr, amt) {
     for(let i in arr){
       arr[i] *= amt;
     }
     return arr;
   },
-  divide: function(arr,amt){
+  divide: function(arr, amt) {
     for(let i in arr){
       arr[i] /= amt;
     }
@@ -106,10 +115,10 @@ const Methods = {
     }
     return n;
   },
-  arrVec: function(arr){
+  arrVec: function(arr) {
     return new Vector3(...arr);
   },
-  negate: function(vec){
+  negate: function(vec) {
     vec.x = -vec.x;
     vec.y = -vec.y;
     vec.z = -vec.z;

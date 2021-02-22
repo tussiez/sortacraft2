@@ -1,4 +1,12 @@
 // https://repl.it/@SortaGames/sortacraft2-xxpertHacker#modules/ChunkGen.js
+/*
+Runs in main thread
+ChunkGen
+Handles ChunkGenWorker
+@author tussiez
+@coauthor xxpertHacker
+*/
+
 
 import Methods from '../modules/Methods.js'
 
@@ -20,7 +28,7 @@ const ChunkGen = function () {
     if(e.data[0] == 'done'){
       scope.onComplete(e.data[1],[e.data[2],e.data[3],e.data[4]]);
       scope.avg.push(performance.now()-scope.postTimestamp);
-      console.log(`Average load time: ${Math.floor(Methods.average(scope.avg))} ms`);
+      // console.log(`Average load time: ${Math.floor(Methods.average(scope.avg))} ms`);
     }
   }
 }

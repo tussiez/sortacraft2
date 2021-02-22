@@ -1,6 +1,7 @@
 /*
 WASM Compilation handler
 @author Baconman321
+Runs in main thread
 */
 
 const WASM = {

@@ -1,57 +1,58 @@
 @font-face {
-  font-family: Minecraft;
-  src: url('resources/Minecraft.ttf')
+	font-family: Minecraft;
+	src: url("resources/Minecraft.ttf");
 }
 
 body {
-  margin: 0px;
-  padding: 0px;
-  overflow: hidden;
-  background-image:url('resources/img/dirt.png');
-  background-size:64px 64px;
-  background-repeat: repeat;
-  image-rendering:pixelated;
-  font-family:Minecraft;
+	margin: 0px;
+	padding: 0px;
+	overflow: hidden;
+	background-image: url("resources/img/dirt.png");
+	background-size: 64px 64px;
+	background-repeat: repeat;
+	image-rendering: pixelated;
+	font-family: Minecraft;
 }
 
 .gameCanvas {
-  position: absolute;
-  top:0;
-  left:0;
+	position: absolute;
+	top: 0;
+	left: 0;
 }
 
 #chatBox {
-  width:60%;
-  height:20%;
-  overflow: auto;
-  background-color:none;
-  color:white;
-  position: absolute;
-  top: calc(90% - 24px - 20%);
-  left: 0;
+	width: 60%;
+	height: 20%;
+	overflow: auto;
+	background-color: none;
+	color: white;
+	position: absolute;
+	top: calc(90% - 24px - 20%);
+	left: 0;
 }
 
 #chatBox::-webkit-scrollbar {
-  -webkit-appearance: none;
+	-webkit-appearance: none;
 }
+
 .message {
-  height: 24px;
-  display:inline-block;
-  background-color: rgba(0,0,0,.25);
-  padding:2px;
-  transition: opacity 0.2s ease, transform 0.2s ease;
+	height: 24px;
+	display: inline-block;
+	background-color: rgba(0, 0, 0, 0.25);
+	padding: 2px;
+	transition: opacity 0.2s ease, transform 0.2s ease;
 }
 
 #commands {
-  height:24px;
-  width:30%;
-  background-color:black;
-  color: white;
-  position: absolute;
-  left: 0;
-  top: 90%;
-  display:none;
+	height: 24px;
+	width: 30%;
+	background-color: black;
+	color: white;
+	position: absolute;
+	left: 0;
+	top: 90%;
+	display: none;
 }
 #inputCommand {
-  margin-left: 5px;
+	margin-left: 5px;
 }
