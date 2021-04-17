@@ -41,9 +41,9 @@ const Methods = {
     } 
     return add /= arr.length;
   },
-	average2: (...argz) => argz.reduce(
+	average2: (...argumentz) => argumentz.reduce(
 		(x, y) => x + y
-	) / argz.length,
+	) / argumentz.length,
   arrToNum: function(arr){
     let a = [];
     for(let i in arr){
@@ -78,7 +78,6 @@ const Methods = {
   sub: function(arr,ar2){
     return [arr[0]-ar2[0],arr[1]-ar2[1],arr[2]-ar2[2]];
   },
-  // It works! Thanks xxpertHacker!
   WASMSub: function(arr1,arr2){
     /*Takes 2 arrays with 3 values in each array (must be a number) */
     if(!WASMInitiated){
@@ -87,12 +86,15 @@ const Methods = {
     if ( typeof compiledErr !== typeof void 0 ){
       throw new Error("\"WASMSub\" cannot be used because the WebAssembly compilation failed with an error: " + err);
     }
+    // Is this copying a JS array... or editing the exiting WASMHeap.buffer...?
+	// these do nothing, no copy, no change, nothing; they merely create a view onto the heap, they don't write anyhting, see what I said below
+  //OOH, yea!
     const buf = WASMHeap.buffer;
     const a = new Float64Array(buf, 8, 4);
     const b = new Float64Array(buf, 8 * a.BYTES_PER_ELEMENT, 4);
     a.set(arr1);
     b.set(arr2);
-    const offset = WASMSubtract(a.byteOffset, b.byteOffset);
+    const offset = WASMSubtract(arr1.length,arr2.length,a.byteOffset, b.byteOffset);
 
     return a.slice();
   },

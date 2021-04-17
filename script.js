@@ -22,11 +22,6 @@ const delay = (seconds) =>
     },
   );
 
-// Msg (or Message) throws some errors sometimes, so I'm going to use alert for now.
-Alerts.msgHTML(
-  "Controls: Use WASD to move around and the mouse to move and place/break blocks.",
-  10,
-);
 
 {
   // Right now it's actually OK at measuring performance, it will only really measure spikes on the main thread though and not the other threads...  :/ -baconman321
@@ -124,19 +119,30 @@ async function makeMessage(msg) {
 
   div.classList.add("message");
   div.textContent = msg;
-  // chatBox.appendChild(div);
-  // chatBox.appendChild(br);
   chatBox.append(div, br);
   chatBox.scrollBy(0, 30);
   await delay(4.5);
   ++removing;
   div.style.opacity = "0";
-  div.removing = true;
   await delay(0.5);
-  // chatBox.removeChild(div);
-  // chatBox.removeChild(br);
   div.remove();
   br.remove();
+}
+
+
+let progressBar = document.getElementById('loader');
+let loadingDiv = document.getElementById('centered');
+let overlayDiv = document.getElementById('dirt_bg');
+
+const setProgress = (state) => {
+  if(state < 100) {
+   // overlayDiv.style.display = 'block';
+   // loadingDiv.style.display = 'block';
+    progressBar.style.width = state + '%';
+  } else {
+    overlayDiv.style.display = 'none';
+    loadingDiv.style.display = 'none';
+  }
 }
 
 // Recieve
@@ -144,6 +150,9 @@ worker.onmessage = ({ data }) => {
   const [op, msg] = data;
   if ("message" === op) {
     makeMessage(msg);
+  }
+  if("progress" === op) {
+    setProgress(msg*100)
   }
 };
 

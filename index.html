@@ -7,9 +7,18 @@
 		<link href="./style.css" rel="stylesheet" type="text/css">
 		<link rel="icon" href="resources/img/ico/sortacraft.ico" type="image/x-icon">
 		<script src="./swLauncher.js" type="module"></script>
+    <!--<script src="lock.js"></script>-->
 		<script src="./script.js" type="module"></script>
 	</head>
 	<body>
+    <div id="dirt_bg"></div>
+    <div id="centered">
+      <h2 style="font-weight:lighter;">Generating world...</h2>
+      <div id="loader_outer">
+        <div id="loader">
+          </div>
+      </div>
+    </div>
 		<canvas id="3d" class="gameCanvas"></canvas>
 		<div id="chatBox"></div>
 		<div id="commands">

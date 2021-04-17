@@ -88,10 +88,11 @@
     "modules/GlobalMethods.js",
     "swLauncher.js",
     "idleTasks.js",
+    "lock.js",
     "resources/img/dirt.png",
     "resources/img/textures.png",
     "resources/img/ico/sortacraft.ico",
-    "resources/Minecraft.ttf",
+    "resources/Minecraft.woff2",
     "VERSION.txt"
   ];
 
@@ -232,7 +233,11 @@
         console.warn("Failed to check version.");
       }
     } catch (err) {
-      console.warn(err);
+      //Probably offline
+        console.warn(
+          "Unable to establish a connection, offline or website down",
+        );
+        console.warn("Failed to check version.");
     }
   }
 

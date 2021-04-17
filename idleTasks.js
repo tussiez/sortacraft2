@@ -80,7 +80,7 @@ export class PerformanceWatcher {
 
     // use a Map or WeakMap instead
     // in fact, I think I could help do this, as I've thought about doing something similar to this before
-    // might be better as Map<DOMString, Set<VoidFunction>>
+    // might be better as Map<string, Set<Function>>
     const listeners = {};
     const idleTimeoutTime = 500;
 

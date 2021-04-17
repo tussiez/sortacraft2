@@ -1,6 +1,7 @@
 @font-face {
 	font-family: Minecraft;
-	src: url("resources/Minecraft.ttf");
+	display: swap;
+	src: url("resources/Minecraft.woff2") format("woff2"), url("resources/Minecraft.ttf")  format("truetype");
 }
 
 body {
@@ -33,6 +34,43 @@ body {
 
 #chatBox::-webkit-scrollbar {
 	-webkit-appearance: none;
+}
+
+#centered {
+  height: 15%;
+  width: 30%;
+  position: absolute;
+  left:35%;
+  top:32.5%;
+  text-align:center;
+  z-index:99;
+  color: white;
+}
+#loader_outer {
+  position: absolute;
+  bottom:0;
+  width:100%;
+  height: 15px;
+  background-color: gray;
+}
+
+#loader {
+  height:15px;
+  width:0px;
+  background-color:#95ff8f;
+}
+
+#dirt_bg {
+  height:100%;
+  width:100%;
+  position: absolute;
+  top:0;
+  left:0;
+  z-index:98;
+  background-image: url("resources/img/dirt.png");
+  background-size: 64px 64px;
+  background-repeat: repeat;
+  image-rendering:pixelated; /*probably already comes from parent <body>, idk*/
 }
 
 .message {

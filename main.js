@@ -189,7 +189,7 @@ function main(c) {
       depthTest: true,
       alphaTest: .1,
       opacity: 0,
-      side: THREE.DoubleSide,
+      // side: THREE.DoubleSide, double sided
     }),
   );
 
@@ -237,7 +237,9 @@ function main(c) {
 
   camera.position.set(32, 48, 32);
   camera.lookAt(new THREE.Vector3(16, 32, 16));
-  Promise.resolve().then(render);
+  Methods.WASMInitiateS().then(() => {
+    Promise.resolve().then(render);
+  });
 }
 
 function createPointer() {
@@ -265,6 +267,7 @@ function pm(x, y) {
 function idleLoad() {
   camera.updateMatrix();
   camera.updateMatrixWorld();
+  let loadedNearPlayer = 0;
   const frustum = new THREE.Frustum();
   const projScreenMatrix = new THREE.Matrix4();
   projScreenMatrix.multiplyMatrices(
@@ -281,11 +284,15 @@ function idleLoad() {
   const [maxZ, minZ] = pm(floor(z), renderDist);
 
   for (const chunk of ChunksIndex) {
-    const { mesh } = Chunks[Methods.string(chunk)];
-    if (scene.children.includes(mesh)) {
-      // remove if player cannot see chunk
-      scene.remove(mesh);
-    }
+    let ch = Chunks[Methods.string(chunk)];
+    ch.checked = false;
+    if (ch.mesh) {
+      ch.mesh.checked = false; // reset checker
+      if (scene.children.includes(ch.mesh)) {
+        // remove if player cannot see chunk
+        scene.remove(ch.mesh);
+      }
+    } 
   }
 
   for (let x = minX; x < maxX; x += cellSize) {
@@ -305,8 +312,16 @@ function idleLoad() {
 
       // Cull operation
       const chunk = Chunks[Methods.string(roundCoord)];
+      if (chunk != undefined && chunk.mesh != undefined) {
+        // add to loaded chunk count, this will be used in progess bar
+        loadedNearPlayer++;
+        chunk.mesh.checked = true; // for a prune
+      } else if(chunk != undefined && chunk.mesh == undefined) {
+        chunk.checked = true; // is in range
+      }
+      if(chunk )
       if (
-        chunk != undefined && chunk.culled == false && Player.canCull == true &&
+        chunk != undefined && chunk.mesh != undefined && chunk.culled == false && Player.canCull == true &&
         Player.canLoad == true
       ) {
         //Hmmmm, sometimes Methods.WASMSub returns undefined. Why tho... Heap problems? Oh wait, I mean the *stack* (big difference on allocation and storing methods) - baconman
@@ -330,7 +345,7 @@ function idleLoad() {
           cellSize,
         );
         const chunk2 = Chunks[Methods.string(rounded2)];
-        if (chunk2 != undefined) {
+        if (chunk2 != undefined && chunk2.mesh != undefined) {
           const distToCam = floor(
             Methods.arrVec(rounded2).distanceTo(camera.position) / cellSize,
           );
@@ -345,6 +360,23 @@ function idleLoad() {
       }
     }
   }
+  for (const chun of ChunksIndex) {
+    let chunk = Chunks[Methods.string(chun)]
+    if (chunk.mesh && chunk.mesh.checked == false) {
+      // remove geometry and material from memory, but DO NOT erase cell.
+      if (chunk.mesh.geometry && chunk.mesh.material) {
+        chunk.mesh.geometry.dispose();
+        chunk.mesh.material.dispose();
+        scene.remove(chunk.mesh);
+        chunk.orgPosition = chunk.mesh.position.clone();
+        chunk.mesh = undefined; // delete
+      }
+    } else if(!chunk.mesh && chunk.checked == true) {
+      // rebuild mesh from cell, if in render distance
+      geometryData.getGeometry(chunk.cell, ...Methods.spread(chunk.orgPosition));
+    }
+  }
+  globalThis.postMessage(['progress', (loadedNearPlayer / renderDist) * 2]);
 }
 
 function render() {
