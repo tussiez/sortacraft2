@@ -370,10 +370,13 @@ function idleLoad() {
         scene.remove(chunk.mesh);
         chunk.orgPosition = chunk.mesh.position.clone();
         chunk.mesh = undefined; // delete
+        chunk.building = false;
       }
-    } else if(!chunk.mesh && chunk.checked == true) {
+    } else if(!chunk.mesh && chunk.checked == true && chunk.building == false && Player.canLoad == true) {
       // rebuild mesh from cell, if in render distance
-      geometryData.getGeometry(chunk.cell, ...Methods.spread(chunk.orgPosition));
+      geometryData.getGeometry(chunk.cell, ...Methods.spread(chunk.orgPosition), false);
+      chunk.building = true;
+      Player.canLoad = false;
     }
   }
   globalThis.postMessage(['progress', (loadedNearPlayer / renderDist) * 2]);

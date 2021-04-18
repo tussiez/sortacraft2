@@ -8,7 +8,7 @@ Runs in main thread
 import Methods from '../modules/Methods.js'
 
 const Commands = {
-  supported: ['tp', 'pos', 'fps', 'help', 'speed', 'seed', 'fog', 'memory'],
+  supported: ['tp', 'pos', 'fps', 'help', 'speed', 'seed', 'fog'],
   parse: function (str, Player) {
     if (!str.startsWith('/')) {
       this.message('<You> ' + str);
@@ -51,8 +51,10 @@ const Commands = {
       if(args.length == 1 && Methods.arrIsNum(Methods.arrToNum([args[0]])) == true){
         Player.speed = Number(args[0]);
         this.message("<Game> Set speed to "+ args[0])
-      } else {
+      } else if(args.length == 1 && !Methods.arrIsNum(Methods.arrToNum([args[0]]))){
         this.message("<Game> Invalid argument - use a number")
+      } else if(args.length == 0) {
+        this.message("<Game> Player speed: "+ Player.speed +", set with /speed #");
       }
     }
 
