@@ -133,6 +133,7 @@ async function makeMessage(msg) {
 let progressBar = document.getElementById('loader');
 let loadingDiv = document.getElementById('centered');
 let overlayDiv = document.getElementById('dirt_bg');
+let progressInfo = document.getElementById('loadingInfo');
 
 const setProgress = (state) => {
   if(state < 100) {
@@ -153,6 +154,9 @@ worker.onmessage = ({ data }) => {
   }
   if("progress" === op) {
     setProgress(msg*100)
+  }
+  if("asset_loaded" == op) {
+    progressInfo.innerText = 'Generating world..'
   }
 };
 

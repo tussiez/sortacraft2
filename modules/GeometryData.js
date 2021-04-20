@@ -17,10 +17,12 @@ function GeometryData(material) {
     "../resources/img/textures.png",
     function (bitmap) {
       scope.texture = new THREE.CanvasTexture(bitmap);
-      console.log(bitmap.width);
+      console.log('Tileset width: ' + bitmap.width);
       scope.texture.minFilter = THREE.NearestFilter;
       scope.texture.magFilter = THREE.NearestFilter;
       scope.material.map = scope.texture;
+      // asset load
+      scope.onTextureLoad();
     },
     undefined,
     function (err) {

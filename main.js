@@ -165,6 +165,7 @@ function resize(dat) {
 function main(c) {
   canvas = c[1];
   console.log("Loading");
+  
 
   scene = new THREE.Scene();
   scene.background = new THREE.Color("gray");
@@ -192,6 +193,7 @@ function main(c) {
       // side: THREE.DoubleSide, double sided
     }),
   );
+  geometryData.onTextureLoad = () => globalThis.postMessage(['asset_loaded']);
 
   chunkGen = new ChunkGen();
 
