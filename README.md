@@ -12,7 +12,7 @@ A Minecraft-like JavaScript voxel game
 
 - [@coderx159](https://replit.com/@coderx159), modeler
 
-- [@xxpertHacker](https://replit.com/@xxpertHacker) RESIGNED - script quality and performance supervisor
+- [@xxpertHacker](https://replit.com/@xxpertHacker) resigned - script quality and performance supervisor
 
 # Want to contribute?
 Head to [SortaCraft2's repository](https://github.com/tussiez/sortacraft2).
