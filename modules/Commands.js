@@ -8,7 +8,7 @@ Runs in main thread
 import Methods from '../modules/Methods.js'
 
 const Commands = {
-  supported: ['tp', 'pos', 'fps', 'help', 'speed', 'seed', 'fog'],
+  supported: ['tp', 'pos', 'fps', 'help', 'speed', 'seed', 'fog', 'renderdist','fly'],
   parse: function (str, Player) {
     if (!str.startsWith('/')) {
       this.message('<You> ' + str);
@@ -33,12 +33,12 @@ const Commands = {
       this.message("<Game> " + Player.fps + " fps");
     }
 
-    if(cmd == 'seed'){
+    if (cmd == 'seed') {
       this.message("<Game> Seed: " + Player.seed)
     }
 
-    if(cmd == 'fog'){
-      if(args.length == 1 && !isNaN(Number(args[0]))){
+    if (cmd == 'fog') {
+      if (args.length == 1 && !isNaN(Number(args[0]))) {
         Player.fogDensityMult = Number(args[0]);
         Player.updateFog();
       } else {
@@ -48,13 +48,13 @@ const Commands = {
     }
 
     if (cmd == 'speed') {
-      if(args.length == 1 && Methods.arrIsNum(Methods.arrToNum([args[0]])) == true){
+      if (args.length == 1 && Methods.arrIsNum(Methods.arrToNum([args[0]])) == true) {
         Player.speed = Number(args[0]);
-        this.message("<Game> Set speed to "+ args[0])
-      } else if(args.length == 1 && !Methods.arrIsNum(Methods.arrToNum([args[0]]))){
+        this.message("<Game> Set speed to " + args[0])
+      } else if (args.length == 1 && !Methods.arrIsNum(Methods.arrToNum([args[0]]))) {
         this.message("<Game> Invalid argument - use a number")
-      } else if(args.length == 0) {
-        this.message("<Game> Player speed: "+ Player.speed +", set with /speed #");
+      } else if (args.length == 0) {
+        this.message("<Game> Player speed: " + Player.speed + ", set with /speed #");
       }
     }
 
@@ -72,10 +72,29 @@ const Commands = {
       )
       );
     }
+    
+    if(cmd == 'fly') {
+      Player.fly = !Player.fly;
+      this.message("<Game> Flying is: " + (Player.fly === true ? "enabled" : "disabled"));
+    }
 
+    if (cmd == 'renderdist') {
+      if (args.length == 1 && Methods.arrIsNum(Methods.arrToNum([args[0]])) == true) {
+        let dist = Number(args[0]);
+        if (dist > 1 && dist <= 64) {
+          Player.setRenderDist(dist);
+          this.message("<Game> Set render distance to " + dist + " chunks")
+        } else {
+          this.message("<Game> Allowed values for render distance: 2-64");
+        }
+      } else {
+        this.message("<Game> Invalid argument - use a number");
+      }
+    }
     if (cmd == 'help') {
       this.message("<Game> Supported: " + Methods.string(this.supported))
     }
+
 
     if (!this.supported.includes(cmd)) {
       this.message('<Game> Unknown command - Try /help')

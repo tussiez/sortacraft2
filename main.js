@@ -75,7 +75,6 @@ const tileTextureWidth = 768;
 const tileTextureHeight = 48;
 
 const keys = new Set();
-const emptyCell = new Uint8Array(cellSize ** 3); // what is this for? Dead code?
 
 const Chunks = {}; // should probably be a Map
 const ChunksIndex = [];
@@ -86,10 +85,15 @@ const Player = {
   canMove: false,
   fogDensityMult: 1.5,
   jumping: false,
-  velocity: 0,
+  canUp: true,
+  velocity: 0.01,
+  fly: false,
   edits: [],
   maxReach: 8, // Cannot select things farther than X blocks away
   renderDist: 4 * cellSize,
+  setRenderDist: (dist) => {
+    Player.renderDist = dist * cellSize;
+  },
   canLoad: true,
   seed: floor(Math.random() * 99999),
   selectedVoxel: 1,
@@ -104,6 +108,7 @@ const Player = {
     Player.fps = render.frame - last;
     getFPS();
   },
+  bbox: new THREE.Box3(new THREE.Vector3(0, 0, 0), new THREE.Vector3(0.5, 1.5, 0.5))
 };
 
 function keydown(dat) {
@@ -165,7 +170,7 @@ function resize(dat) {
 function main(c) {
   canvas = c[1];
   console.log("Loading");
-  
+
 
   scene = new THREE.Scene();
   scene.background = new THREE.Color("gray");
@@ -294,7 +299,7 @@ function idleLoad() {
         // remove if player cannot see chunk
         scene.remove(ch.mesh);
       }
-    } 
+    }
   }
 
   for (let x = minX; x < maxX; x += cellSize) {
@@ -318,29 +323,29 @@ function idleLoad() {
         // add to loaded chunk count, this will be used in progess bar
         loadedNearPlayer++;
         chunk.mesh.checked = true; // for a prune
-      } else if(chunk != undefined && chunk.mesh == undefined) {
+      } else if (chunk != undefined && chunk.mesh == undefined) {
         chunk.checked = true; // is in range
       }
-      if(chunk )
-      if (
-        chunk != undefined && chunk.mesh != undefined && chunk.culled == false && Player.canCull == true &&
-        Player.canLoad == true
-      ) {
-        //Hmmmm, sometimes Methods.WASMSub returns undefined. Why tho... Heap problems? Oh wait, I mean the *stack* (big difference on allocation and storing methods) - baconman
-        const fwd = Chunks[Methods.sub(roundCoord, [cellSize, 0, 0])];
-        const bwd = Chunks[Methods.sub(roundCoord, [-cellSize, 0, 0])];
-        const l = Chunks[Methods.sub(roundCoord, [0, 0, cellSize])];
-        const r = Chunks[Methods.sub(roundCoord, [0, 0, -cellSize])];
+      if (chunk)
         if (
-          fwd != undefined && bwd != undefined && l != undefined &&
-          r != undefined
+          chunk != undefined && chunk.mesh != undefined && chunk.culled == false && Player.canCull == true &&
+          Player.canLoad == true
         ) {
-          // Can cull
-          Player.canCull = false;
-          chunk.culled = true;
-          geometryData.getGeometry(chunk.voxels, ...roundCoord, true);
+          //Hmmmm, sometimes Methods.WASMSub returns undefined. Why tho... Heap problems? Oh wait, I mean the *stack* (big difference on allocation and storing methods) - baconman
+          const fwd = Chunks[Methods.sub(roundCoord, [cellSize, 0, 0])];
+          const bwd = Chunks[Methods.sub(roundCoord, [-cellSize, 0, 0])];
+          const l = Chunks[Methods.sub(roundCoord, [0, 0, cellSize])];
+          const r = Chunks[Methods.sub(roundCoord, [0, 0, -cellSize])];
+          if (
+            fwd != undefined && bwd != undefined && l != undefined &&
+            r != undefined
+          ) {
+            // Can cull
+            Player.canCull = false;
+            chunk.culled = true;
+            geometryData.getGeometry(chunk.voxels, ...roundCoord, true);
+          }
         }
-      }
       for (let y = minY; y < maxY; y += cellSize) {
         const rounded2 = Methods.multiply(
           Methods.arr(localWorld.computeCellId(x, y, z)),
@@ -374,7 +379,7 @@ function idleLoad() {
         chunk.mesh = undefined; // delete
         chunk.building = false;
       }
-    } else if(!chunk.mesh && chunk.checked == true && chunk.building == false && Player.canLoad == true) {
+    } else if (!chunk.mesh && chunk.checked == true && chunk.building == false && Player.canLoad == true) {
       // rebuild mesh from cell, if in render distance
       geometryData.getGeometry(chunk.cell, ...Methods.spread(chunk.orgPosition), false);
       chunk.building = true;
@@ -393,26 +398,50 @@ function render() {
 
 function movePlayer() {
   if (Player.canMove == true) {
+    camera.position.y -= 1.5;
     if (keys.has("w")) {
-      controls.forward(Player.speed);
+      controls.forward(Player.speed, intersectPlayerSelf);
     }
     if (keys.has("a")) {
-      controls.right(-Player.speed);
+      controls.right(-Player.speed, intersectPlayerSelf);
     }
     if (keys.has("s")) {
-      controls.forward(-Player.speed);
+      controls.forward(-Player.speed, intersectPlayerSelf);
     }
     if (keys.has("d")) {
-      controls.right(Player.speed);
+      controls.right(Player.speed, intersectPlayerSelf);
     }
     if (keys.has(" ")) {
-      camera.position.addScaledVector(new THREE.Vector3(0, 1, 0), Player.speed);
+      if (Player.canUp == true && Player.jumping === false &&Player.fly == false) {
+        //
+
+        // Jump
+        Player.velocity = -0.1;
+        Player.jumping = true;
+      }
+      if(Player.fly === true) {
+        camera.position.addScaledVector(new THREE.Vector3(0, 1, 0), Player.speed);
+        camera.position.y += 1.5;
+        if(intersectPlayerSelf() == true) {
+          camera.position.addScaledVector(new THREE.Vector3(0,1,0), -Player.speed)
+        }
+        camera.position.y -= 1.5;
+        if(intersectPlayerSelf() == true) {
+          camera.position.y += 1.5;
+        }
+      }
     }
-    if (keys.has("shift")) {
+    if (keys.has("shift") && Player.fly === true) {
       camera.position.addScaledVector(
         new THREE.Vector3(0, 1, 0),
         -Player.speed,
       );
+      if (intersectPlayerSelf() === true) {
+        camera.position.addScaledVector(
+          new THREE.Vector3(0, 1, 0),
+          Player.speed,
+        )
+      }
     }
 
     if (
@@ -420,7 +449,32 @@ function movePlayer() {
     ) {
       movePointer();
     }
+    if (Player.fly === false) {
+      if (Player.velocity > 0) {
+        Player.velocity *= 1.05; // Faster
+      } else {
+        Player.velocity *= 0.98; // Slower
+        if (Player.jumping === true && Player.velocity > -0.01) {
+          Player.velocity = 0.01;
+        }
+      }
+      if (Player.velocity > 0.4) Player.velocity = 0.4; // cap
+      camera.position.y -= Player.velocity;
+      if (intersectPlayerSelf() === true) {
+        camera.position.y += Player.velocity;
+        Player.velocity = 0.01;
+        Player.jumping = false;
+      } else {
+
+      }
+    }
+    camera.position.y += 1.5;
   }
+  // Calculate bbox
+  Player.bbox.set(
+    new THREE.Vector3(camera.position.x - 0.5, camera.position.y - 1.5, camera.position.z - 0.5),
+    new THREE.Vector3(camera.position.z + 0.5, camera.position.y, camera.position.z + 0.5)
+  );
 }
 
 function setChunk(mesh) {
@@ -470,43 +524,52 @@ function modifyChunk(type) {
   const intersection = Raycast.fromPlayer(type, Player);
   if (intersection) {
     if (intersection[1] < 1000) { // Below chunk height limit
-      localWorld.setVoxel(...intersection, type);
-      const cell = localWorld.getCellForVoxel(...intersection);
-      const position = Methods.multiply(
-        Methods.arr(localWorld.computeCellId(...intersection)),
-        cellSize,
+      let aabb1 = Methods.arrVec(intersection);
+      let aabb = new THREE.Box3(
+        new THREE.Vector3(aabb1.x - 0.5, aabb1.y - 0.5, aabb1.z - 0.5),
+        new THREE.Vector3(aabb1.x + 0.5, aabb1.y + 0.5, aabb1.z + 0.5)
       );
-      const floorPos = Methods.floor(position);
-      const localPos = Methods.WASMSub(Methods.floor(intersection), position);
-      geometryData.getGeometry(cell, ...position, true);
-      if (posInCorner(...localPos)) {
-        // Corner, update neighboring chunks to prevent invisible chunk
+      if (type != 0 && (
+        !Player.bbox.intersectsBox(aabb)
+      ) || type === 0) {
+        localWorld.setVoxel(...intersection, type);
+        const cell = localWorld.getCellForVoxel(...intersection);
+        const position = Methods.multiply(
+          Methods.arr(localWorld.computeCellId(...intersection)),
+          cellSize,
+        );
+        const floorPos = Methods.floor(position);
+        const localPos = Methods.WASMSub(Methods.floor(intersection), position);
+        geometryData.getGeometry(cell, ...position, true);
+        if (posInCorner(...localPos)) {
+          // Corner, update neighboring chunks to prevent invisible chunk
 
-        const positions = {
-          fwd: Methods.WASMSub(floorPos, [cellSize, 0, 0]),
-          bwd: Methods.WASMSub(floorPos, [-cellSize, 0, 0]),
-          left: Methods.WASMSub(floorPos, [0, 0, cellSize]),
-          right: Methods.WASMSub(floorPos, [0, 0, -cellSize]),
-        };
+          const positions = {
+            fwd: Methods.WASMSub(floorPos, [cellSize, 0, 0]),
+            bwd: Methods.WASMSub(floorPos, [-cellSize, 0, 0]),
+            left: Methods.WASMSub(floorPos, [0, 0, cellSize]),
+            right: Methods.WASMSub(floorPos, [0, 0, -cellSize]),
+          };
 
-        const {
-          [positions.fwd]: fwd,
-          [positions.bwd]: bwd,
-          [positions.left]: l,
-          [positions.right]: r,
-        } = Chunks;
+          const {
+            [positions.fwd]: fwd,
+            [positions.bwd]: bwd,
+            [positions.left]: l,
+            [positions.right]: r,
+          } = Chunks;
 
-        if (
-          fwd != undefined && bwd != undefined && l != undefined &&
-          r != undefined
-        ) {
-          geometryData.getGeometry(fwd.voxels, ...positions.fwd, true);
-          geometryData.getGeometry(bwd.voxels, ...positions.bwd, true);
-          geometryData.getGeometry(l.voxels, ...positions.left, true);
-          geometryData.getGeometry(r.voxels, ...positions.right, true);
+          if (
+            fwd != undefined && bwd != undefined && l != undefined &&
+            r != undefined
+          ) {
+            geometryData.getGeometry(fwd.voxels, ...positions.fwd, true);
+            geometryData.getGeometry(bwd.voxels, ...positions.bwd, true);
+            geometryData.getGeometry(l.voxels, ...positions.left, true);
+            geometryData.getGeometry(r.voxels, ...positions.right, true);
+          }
         }
+        movePointer(); // Update pointer
       }
-      movePointer(); // Update pointer
     }
   }
 }

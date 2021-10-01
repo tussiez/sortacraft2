@@ -12,28 +12,49 @@ Runs in main thread
 import {
   Euler,
   Vector3
- } from 'https://threejs.org/build/three.module.js'
+} from 'https://threejs.org/build/three.module.js'
 
-function PlayerControls(camera){
+function PlayerControls(camera) {
   this.minPolarAngle = 0;
   this.maxPolarAngle = Math.PI;
-  this.pi2 = Math.PI/2;
-  this.euler = new Euler(0,0,0,'YXZ');
+  this.pi2 = Math.PI / 2;
+  this.euler = new Euler(0, 0, 0, 'YXZ');
   this.vec = new Vector3();
 
-  this.getDir = function(){
-    return new Vector3(0,0,-1).applyQuaternion(camera.quaternion);
+  this.getDir = function () {
+    return new Vector3(0, 0, -1).applyQuaternion(camera.quaternion);
   }
-  this.right = function(dist){
-    this.vec.setFromMatrixColumn(camera.matrix,0);
-    camera.position.addScaledVector(this.vec,dist);
+  this.generateSplit = function (vec) {
+    return [new Vector3(vec.x, 0, 0), new Vector3(0, vec.y, 0), new Vector3(0, 0, vec.z)];
   }
-  this.forward = function(dist) {
-    this.vec.setFromMatrixColumn(camera.matrix,0);
+  this.checkIntersect = function (x, y, z, camera, inter, dist) {
+    let i = 3;
+    let ar = [x, y, z]
+    while (i--) {
+      let y = ar[i];
+      camera.position.addScaledVector(y, dist);
+      if (inter() === true) {
+        camera.position.addScaledVector(y.negate(), dist);
+      }
+      camera.position.y += 1.5;
+      if(inter() === true) {
+        camera.position.addScaledVector(y.negate(),dist);
+      }
+      camera.position.y -= 1.5;
+    }
+  }
+  this.right = function (dist, inter) {
+    this.vec.setFromMatrixColumn(camera.matrix, 0);
+    let [x, y, z] = this.generateSplit(this.vec);
+    this.checkIntersect(x, y, z, camera, inter, dist);
+  }
+  this.forward = function (dist, inter) {
+    this.vec.setFromMatrixColumn(camera.matrix, 0);
     this.vec.crossVectors(camera.up, this.vec);
-    camera.position.addScaledVector(this.vec,dist);
+    let [x, y, z] = this.generateSplit(this.vec);
+    this.checkIntersect(x, y, z, camera, inter, dist);
   }
-  this.look = function(x,y){
+  this.look = function (x, y) {
     this.euler.setFromQuaternion(camera.quaternion);
     this.euler.y -= x * 0.002;
     this.euler.x -= y * 0.002;
