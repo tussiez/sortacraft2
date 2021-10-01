@@ -453,7 +453,7 @@ function movePlayer() {
       if (Player.velocity > 0) {
         Player.velocity *= 1.05; // Faster
       } else {
-        Player.velocity *= 0.98; // Slower
+        Player.velocity *= 0.92; // Slower
         if (Player.jumping === true && Player.velocity > -0.01) {
           Player.velocity = 0.01;
         }
