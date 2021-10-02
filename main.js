@@ -1,9 +1,14 @@
 /*
 SortaCraft
-It's.. SortaCraft
+
+It's.. SortaCraft!
 @author tussiez
 @coauthor Baconman321
-Worker
+@coauthor xxpertHacker
+
+sortagames.repl.co
+
+sortacraft.sortagames.repl.co
 */
 
 // Imports

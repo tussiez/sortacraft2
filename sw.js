@@ -1,3 +1,14 @@
+/*
+Service Worker for SortaCraft
+
+Caches data for SortaCraft
+
+@author Baconman321
+
+sortagames.repl.co
+*/
+
+
 // This is the service worker file. It will be registered as a service worker. Service workers and Web workers both work on seperate threads than the main thread, which is used to handle all other JavaScript files otherwise.
 // In a service worker, it uses the global scope of "self". This is like the window object in main frames. Note that you can't access local storage or session storage, or the window object. You could rewrite self as "this" as well.
 
@@ -86,6 +97,8 @@
     "modules/SortaCanvas.js",
     "modules/Raycast.js",
     "modules/GlobalMethods.js",
+    "modules/TouchControls.js",
+    "modules/TouchControlsWorker.js",
     "swLauncher.js",
     "idleTasks.js",
     "lock.js",

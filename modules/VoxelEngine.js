@@ -2,7 +2,8 @@
 Voxel Engine
 @author threejsfundamentals
 @author tussiez
-Runs in main thread
+
+sortagames.repl.co
 */
 
 const THREE = {

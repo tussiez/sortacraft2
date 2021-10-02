@@ -1,7 +1,8 @@
 /*
 WASM Compilation handler
 @author Baconman321
-Runs in main thread
+
+sortagames.repl.co
 */
 
 const WASM = {

@@ -2,7 +2,10 @@
 SortaCanvas
 JavaScript canvas library
 @author tussiez
-Unused code (for now). To be used in main thread with OffscreenCanvas
+
+OLD VERSION! See new https://sortacanvas.sortagames.repl.co/lib2.js
+
+sortagames.repl.co
 */
 
 let SortaCanvas = {

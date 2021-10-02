@@ -1,14 +1,17 @@
 /*
-Runs as worker
 ChunkGenWorker
 Creates voxel terrain
+
 @author tussiez
-// @coauthor xxperthacker
+@coauthor xxperthacker
+
+sortagames.repl.co
 */
 
 import VoxelWorld from "../modules/VoxelEngine.js";
 import Perlin from "../modules/Perlin.js";
 import GlobalM from "../modules/GlobalMethods.js";
+
 let voxWorld, perlin;
 // Use "GlobalM.debugMode = true;" to show debug logs (all the logs were significantly slowing down the game :/  ).
 // GlobalM.debugMode = true;

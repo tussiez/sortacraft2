@@ -1,8 +1,10 @@
 /*
 Handles geometry data to/from GeometryDataWorker
 Creates objects, loads texture
+
 @author tussiez
-Runs in main thread
+
+sortagames.repl.co
 */
 
 import * as THREE from "../modules/three.js";

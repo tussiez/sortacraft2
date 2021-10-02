@@ -1,3 +1,12 @@
+/*
+Service Worker Launcher
+
+Works with /sw.js
+
+@author Baconman321
+*/
+
+
 import * as Alerts from "./modules/alerts.js";
 
 const { navigator, document } = globalThis;

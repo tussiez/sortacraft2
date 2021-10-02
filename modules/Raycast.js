@@ -2,7 +2,8 @@
 Raycast
 Used to do raycasting on the voxel world
 @author tussiez
-Runs in main worker
+
+sortagames.repl.co
 */
 
 import { Vector3 } from "./three.js";

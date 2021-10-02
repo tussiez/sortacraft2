@@ -5,6 +5,7 @@ Methods useful for and accessable to any program reguardless of it's thread*.
 
 *: Only uses native functions that typically are available on different threads, like console.log.
 
+sortagames.repl.co
 */
 
 const {

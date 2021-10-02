@@ -1,9 +1,16 @@
-// script.js
-// Handles workers/etc
-
 /*
-window
+script.js
+
+Handles main worker for SortaCraft
+
+@author xxpertHacker
+@author tussiez
+@author Baconman321
+
+sortagames.repl.co
 */
+
+
 import * as Alerts from "/modules/alerts.js";
 import { PerformanceWatcher } from "./idleTasks.js";
 

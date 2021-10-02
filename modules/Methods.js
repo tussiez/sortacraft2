@@ -1,8 +1,13 @@
 /*
 Methods
-Makes coding easier
+
+Simplifies vector and array operations
+
 @author tussiez
-Runs in main thread
+@author Baconman321
+@author xxpertHacker
+
+sortagames.repl.co
 */
 
 import { Vector3 } from '../modules/three.js';

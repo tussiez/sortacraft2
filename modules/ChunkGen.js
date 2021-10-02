@@ -1,10 +1,12 @@
 // https://repl.it/@SortaGames/sortacraft2-xxpertHacker#modules/ChunkGen.js
 /*
-Runs in main thread
 ChunkGen
 Handles ChunkGenWorker
+
 @author tussiez
 @coauthor xxpertHacker
+
+sortagames.repl.co
 */
 
 

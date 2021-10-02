@@ -6,7 +6,7 @@ made for SortaCraft
 
 @author tussiez
 
-Runs in main thread
+sortagames.repl.co
 */
 
 import {

@@ -1,8 +1,11 @@
 /*
 Commands
-Basic game commands
+
+Commands system
+
 @author tussiez
-Runs in main thread
+
+sortagames.repl.co
 */
 
 import Methods from '../modules/Methods.js'

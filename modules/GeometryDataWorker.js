@@ -1,8 +1,10 @@
 /*
 GeometryDataWorker
-Handles geometry data generation, as a worker.
+Handles geometry data generation
 @author tussiez
-Runs in worker ^
+
+
+sortagames.repl.co
 */
 
 

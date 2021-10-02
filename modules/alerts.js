@@ -1,7 +1,9 @@
-/*Easy alerts
-Main thread
+/*
+Easy alerts
 @author Baconman321
 @coauthor xxpertHacker
+
+sortagames.repl.co
 */
 
 // global "imports"

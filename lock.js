@@ -1,3 +1,7 @@
+/*
+Strange lock device
+*/
+
 //Annoying bros
 
 //They don't know JS so Ima just fool 'em a bit.
