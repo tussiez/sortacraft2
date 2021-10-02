@@ -13,7 +13,7 @@ sortagames.repl.co
 
 import * as Alerts from "./modules/alerts.js";
 import { PerformanceWatcher } from "./idleTasks.js";
-
+import TouchControls from './modules/TouchControls.js'; // TouchControls 1
 const {
   document,
   document: { body },
@@ -22,6 +22,7 @@ const {
   Promise,
 } = globalThis;
 
+let controls;
 const delay = (seconds) =>
   new Promise(
     (resolve, _) => {
@@ -71,6 +72,9 @@ const delay = (seconds) =>
 
 const canvas = document.getElementById("3d");
 const offscreen = canvas.transferControlToOffscreen();
+let isMobile = (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent));
+
+
 
 // CHECK THE VENDOR!!! - baconman
 // prob usless nowadays; 2021 ~ xxpertHacker
@@ -103,7 +107,7 @@ let removing = 0;
 function changeCallback() {
   pointerLocked = !pointerLocked;
   worker.postMessage(["pointerLock", pointerLocked]);
-} // when become pointerlock
+}
 
 const worker = new Worker("./main.js", { type: "module" });
 
@@ -113,10 +117,66 @@ worker.postMessage([
   globalThis.innerWidth,
   globalThis.innerHeight,
 ], [
-  offscreen,
-]);
+    offscreen,
+  ]);
 
-// does this exist from the start
+if (isMobile === true) {
+  controls = new TouchControls(canvas);
+  controls.createUI();
+
+
+  controls.onOrientationChange(orien => {
+    if (orien < 1) {
+      if (!document.querySelector("#orienAlert")) {
+        const orienAlert = document.createElement("div");
+        orienAlert.id = "orienAlert";
+        orienAlert.style = "background-color:orange;color:black;text-align:center;position:fixed;width:100%;height:100%;top:0;left:0;z-index:1000000;";
+        orienAlert.innerHTML = "<h1 style='font-size:50px;'>Please rotate to landscape for optimal play,thanks</h1>";
+        document.body.appendChild(orienAlert);
+      }
+    }
+    else {
+      if (document.querySelector("#orienAlert")) {
+        document.querySelector("#orienAlert").remove();
+      }
+    }
+  });
+
+  controls.onForward = () => {
+    worker.postMessage(['touch_forward']);
+  }
+  controls.onBackward = () => {
+    worker.postMessage(['touch_backward']);
+  }
+  controls.onLeft = () => {
+    worker.postMessage(['touch_left']);
+  }
+  controls.onRight = () => {
+    worker.postMessage(['touch_right']);
+  }
+  controls.onForwardEnd = () => {
+    worker.postMessage(['touch_forward_end']);
+  }
+  controls.onBackwardEnd = () => {
+    worker.postMessage(['touch_backward_end']);
+  }
+  controls.onLeftEnd = () => {
+    worker.postMessage(['touch_left_end']);
+  }
+  controls.onRightEnd = () => {
+    worker.postMessage(['touch_right_end']);
+  }
+  controls.onJump = () => {
+    worker.postMessage(['touch_jump']);
+  }
+  controls.onJumpEnd = () => {
+    worker.postMessage(['touch_jump_end']);
+  }
+  controls.lookEvent = (x,y) => {
+    worker.postMessage(['touch_look', {x,y}]);
+  }
+}
+
 const chatBox = document.getElementById("chatBox");
 
 async function makeMessage(msg) {
@@ -143,9 +203,9 @@ let overlayDiv = document.getElementById('dirt_bg');
 let progressInfo = document.getElementById('loadingInfo');
 
 const setProgress = (state) => {
-  if(state < 100) {
-   // overlayDiv.style.display = 'block';
-   // loadingDiv.style.display = 'block';
+  if (state < 100) {
+    // overlayDiv.style.display = 'block';
+    // loadingDiv.style.display = 'block';
     progressBar.style.width = state + '%';
   } else {
     overlayDiv.style.display = 'none';
@@ -159,10 +219,10 @@ worker.onmessage = ({ data }) => {
   if ("message" === op) {
     makeMessage(msg);
   }
-  if("progress" === op) {
-    setProgress(msg*100)
+  if ("progress" === op) {
+    setProgress(msg * 100)
   }
-  if("asset_loaded" == op) {
+  if ("asset_loaded" == op) {
     progressInfo.innerText = 'Generating world..'
   }
 };
@@ -205,7 +265,7 @@ body.addEventListener(
   "keydown",
   ({ key }) => {
     // const init = !typingCommand && "t" === key;
-	// I think this ^ would work ~ xxpertHacker
+    // I think this ^ would work ~ xxpertHacker
     let init = false;
 
     if (!typingCommand) {
@@ -214,7 +274,7 @@ body.addEventListener(
         typingCommand = true;
         commands.style.display = "block";
       }
-      if(key == '/'){
+      if (key == '/') {
         typedCommand = '/';
         inputCommand.textContent = "/";
       }

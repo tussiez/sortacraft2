@@ -45,6 +45,18 @@ body {
 	-webkit-appearance: none;
 }
 
+.arrow {
+  height: 100%;
+  width: 100%;
+  position: relative;
+  background-color: gray;
+  border-radius: 2px;
+  display: inline-block;
+}
+.arrow:active {
+  background-color: darkgray;
+}
+
 #centered {
   height: 15%;
   width: 30%;

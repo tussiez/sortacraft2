@@ -137,7 +137,7 @@ class TouchControls {
 
     container.setAttribute(
       "style",
-      "position:fixed;bottom:0;left:0;height:20vw;width:20vw; border: 1px solid white;z-index:2",
+      "position:fixed;bottom:0;left:0;height:20vw;width:20vw;z-index:2",
     ); // test
 
     container.appendChild(table);

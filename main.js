@@ -20,6 +20,7 @@ import GeometryData from "/modules/GeometryData.js";
 import ChunkGen from "/modules/ChunkGen.js";
 import Raycast from "/modules/Raycast.js";
 import Commands from "/modules/Commands.js";
+import TouchControls  from '/modules/TouchControlsWorker.js';
 
 const {
   Promise,
@@ -61,6 +62,17 @@ const handlers = {
   mouseup,
   resize,
   mousemove,
+  touch_forward,
+  touch_backward,
+  touch_left,
+  touch_right,
+  touch_jump,
+  touch_forward_end,
+  touch_backward_end,
+  touch_left_end,
+  touch_right_end,
+  touch_jump_end,
+  touch_look,
 };
 
 // Variables
@@ -73,6 +85,7 @@ let geometryData;
 let chunkGen;
 let localWorld;
 let renderer;
+let touchControls;
 
 const cellSize = 32;
 const tileSize = 16;
@@ -152,6 +165,56 @@ function mouseup() {
   // Nothing
 }
 
+function touch_forward() {
+  Player.canMove = true;
+  touchControls.onForward();
+}
+
+function touch_backward() {
+  Player.canMove = true;
+  touchControls.onBackward();
+}
+
+function touch_left() {
+  Player.canMove = true;
+  touchControls.onLeft();
+}
+
+function touch_right() {
+  Player.canMove = true;
+  touchControls.onRight();
+}
+
+function touch_jump() {
+  Player.canMove = true;
+  touchControls.onJump();
+}
+
+function touch_forward_end() {
+  touchControls.onForwardEnd();
+}
+
+function touch_backward_end() {
+  touchControls.onBackwardEnd();
+}
+
+function touch_left_end() {
+  touchControls.onLeftEnd();
+}
+
+function touch_right_end() {
+  touchControls.onRightEnd();
+}
+
+function touch_jump_end() {
+  touchControls.onJumpEnd();
+}
+
+function touch_look(e) {
+  let {x,y} = e[1];
+  touchControls.look(x,y);
+}
+
 function keyup(dat) {
   keys.delete(dat[1].toLowerCase());
 }
@@ -191,6 +254,7 @@ function main(c) {
   renderer = new THREE.WebGLRenderer({ canvas });
   renderer.setSize(c[2], c[3], false); //false for offscreen
   controls = new PlayerControls(camera);
+  touchControls = new TouchControls(camera, keys);
 
   geometryData = new GeometryData(
     new THREE.MeshBasicMaterial({
