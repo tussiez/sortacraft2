@@ -81,11 +81,11 @@ const Commands = {
     if (cmd == 'renderdist') {
       if (args.length == 1 && Methods.arrIsNum(Methods.arrToNum([args[0]])) == true) {
         let dist = Number(args[0]);
-        if (dist > 1 && dist <= 64) {
+        if (dist > 1 && dist <= 12) {
           Player.setRenderDist(dist);
           this.message("<Game> Set render distance to " + dist + " chunks")
         } else {
-          this.message("<Game> Allowed values for render distance: 2-64");
+          this.message("<Game> Allowed values for render distance: 2-12");
         }
       } else {
         this.message("<Game> Invalid argument - use a number");
