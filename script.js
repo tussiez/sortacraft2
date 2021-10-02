@@ -11,7 +11,7 @@ sortagames.repl.co
 */
 
 
-import * as Alerts from "/modules/alerts.js";
+import * as Alerts from "./modules/alerts.js";
 import { PerformanceWatcher } from "./idleTasks.js";
 
 const {
