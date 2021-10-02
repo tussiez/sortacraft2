@@ -36,11 +36,13 @@ function PlayerControls(camera) {
       if (inter() === true) {
         camera.position.addScaledVector(y.negate(), dist);
       }
-      camera.position.y += 1.5;
+      
+      camera.position.y -= 1.5;
       if(inter() === true) {
         camera.position.addScaledVector(y.negate(),dist);
       }
-      camera.position.y -= 1.5;
+      camera.position.y += 1.5;
+      
     }
   }
   this.right = function (dist, inter) {

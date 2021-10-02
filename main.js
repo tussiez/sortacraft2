@@ -20,7 +20,7 @@ import GeometryData from "/modules/GeometryData.js";
 import ChunkGen from "/modules/ChunkGen.js";
 import Raycast from "/modules/Raycast.js";
 import Commands from "/modules/Commands.js";
-import TouchControls  from '/modules/TouchControlsWorker.js';
+import TouchControls from '/modules/TouchControlsWorker.js';
 
 const {
   Promise,
@@ -211,8 +211,8 @@ function touch_jump_end() {
 }
 
 function touch_look(e) {
-  let {x,y} = e[1];
-  touchControls.look(x,y);
+  let { x, y } = e[1];
+  touchControls.look(x, y);
 }
 
 function keyup(dat) {
@@ -467,7 +467,6 @@ function render() {
 
 function movePlayer() {
   if (Player.canMove == true) {
-    camera.position.y -= 1.5;
     if (keys.has("w")) {
       controls.forward(Player.speed, intersectPlayerSelf);
     }
@@ -480,22 +479,23 @@ function movePlayer() {
     if (keys.has("d")) {
       controls.right(Player.speed, intersectPlayerSelf);
     }
+    camera.position.y -= 1.5;
     if (keys.has(" ")) {
-      if (Player.canUp == true && Player.jumping === false &&Player.fly == false) {
+      if (Player.canUp == true && Player.jumping === false && Player.fly == false) {
         //
 
         // Jump
         Player.velocity = -0.1;
         Player.jumping = true;
       }
-      if(Player.fly === true) {
+      if (Player.fly === true) {
         camera.position.addScaledVector(new THREE.Vector3(0, 1, 0), Player.speed);
         camera.position.y += 1.5;
-        if(intersectPlayerSelf() == true) {
-          camera.position.addScaledVector(new THREE.Vector3(0,1,0), -Player.speed)
+        if (intersectPlayerSelf() == true) {
+          camera.position.addScaledVector(new THREE.Vector3(0, 1, 0), -Player.speed)
         }
         camera.position.y -= 1.5;
-        if(intersectPlayerSelf() == true) {
+        if (intersectPlayerSelf() == true) {
           camera.position.y += 1.5;
         }
       }
@@ -522,20 +522,24 @@ function movePlayer() {
       if (Player.velocity > 0) {
         Player.velocity *= 1.05; // Faster
       } else {
+
         Player.velocity *= 0.92; // Slower
         if (Player.jumping === true && Player.velocity > -0.01) {
           Player.velocity = 0.01;
         }
       }
+
       if (Player.velocity > 0.4) Player.velocity = 0.4; // cap
       camera.position.y -= Player.velocity;
       if (intersectPlayerSelf() === true) {
         camera.position.y += Player.velocity;
         Player.velocity = 0.01;
         Player.jumping = false;
-      } else {
-
       }
+
+
+
+
     }
     camera.position.y += 1.5;
   }
