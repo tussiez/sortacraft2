@@ -75,38 +75,39 @@ sortagames.repl.co
   } = globalThis;
 
   const cacheList = [
-    "/",
-    "index.html",
-    "style.css",
-    "script.js",
-    "main.js",
-    "https://threejs.org/build/three.module.js",
-    "/modules/Methods.js",
-    "/modules/PlayerControls.js",
-    "/modules/VoxelEngine.js",
-    "/modules/GeometryData.js",
-    "/modules/ChunkGen.js",
-    "/modules/GeometryDataWorker.js",
-    "/modules/ChunkGenWorker.js",
-    "/modules/Perlin.js",
-    "/modules/alerts.js",
-    "/modules/WASMLoader.js",
-    "/modules/TWEEN.js",
-    "/modules/three.js",
-    "/modules/Commands.js",
-    "/modules/SortaCanvas.js",
-    "/modules/Raycast.js",
-    "/modules/GlobalMethods.js",
-    "/modules/TouchControls.js",
-    "/modules/TouchControlsWorker.js",
-    "swLauncher.js",
-    "idleTasks.js",
-    "lock.js",
-    "/resources/img/dirt.png",
-    "/resources/img/textures.png",
-    "/resources/img/ico/sortacraft.ico",
-    "/resources/Minecraft.woff2",
-    "VERSION.txt"
+    "./",
+    "./index.html",
+    "./style.css",
+    "./script.js",
+    "./main.js",
+    "./https://threejs.org/build/three.module.js",
+    "./modules/Methods.js",
+    "./modules/PlayerControls.js",
+    "./modules/VoxelEngine.js",
+    "./modules/GeometryData.js",
+    "./modules/ChunkGen.js",
+    "./modules/GeometryDataWorker.js",
+    "./modules/ChunkGenWorker.js",
+    "./modules/Perlin.js",
+    "./modules/alerts.js",
+    "./modules/WASMLoader.js",
+    "./modules/TWEEN.js",
+    "./modules/three.js",
+    "./modules/Commands.js",
+    "./modules/SortaCanvas.js",
+    "./modules/Raycast.js",
+    "./modules/GlobalMethods.js",
+    "./modules/TouchControls.js",
+    "./modules/TouchControlsWorker.js",
+    "./swLauncher.js",
+    "./idleTasks.js",
+    "./lock.js",
+    "./resources/img/dirt.png",
+    "./resources/img/textures.png",
+    "./resources/img/ico/sortacraft.ico",
+    "./resources/Minecraft.woff2",
+    "./VERSION.txt",
+    "./WASM/Math/Math.wasm"
   ];
 
   const cacheControl = {
@@ -241,14 +242,14 @@ sortagames.repl.co
       } catch {
         //Probably offline
         console.warn(
-          "Unable to establish a connection, offline or website down",
+          "Unable to establish a connection: cannot connect to server",
         );
         console.warn("Failed to check version.");
       }
     } catch (err) {
       //Probably offline
         console.warn(
-          "Unable to establish a connection, offline or website down",
+          "Unable to establish a connection: cannot connect to server",
         );
         console.warn("Failed to check version.");
     }
