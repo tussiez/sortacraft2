@@ -72,6 +72,7 @@ const delay = (seconds) =>
 
 const canvas = document.getElementById("3d");
 const offscreen = canvas.transferControlToOffscreen();
+
 let isMobile = (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent));
 
 
@@ -131,7 +132,7 @@ if (isMobile === true) {
         const orienAlert = document.createElement("div");
         orienAlert.id = "orienAlert";
         orienAlert.style = "background-color:orange;color:black;text-align:center;position:fixed;width:100%;height:100%;top:0;left:0;z-index:1000000;";
-        orienAlert.innerHTML = "<h1 style='font-size:50px;'>Please rotate to landscape for optimal play,thanks</h1>";
+        orienAlert.innerHTML = "<h1 style='font-size:50px;'>For a better experience, please play in landscape mode.</h1>";
         document.body.appendChild(orienAlert);
       }
     }

@@ -485,7 +485,7 @@ function movePlayer() {
         //
 
         // Jump
-        Player.velocity = -0.1;
+        Player.velocity = -0.4;
         Player.jumping = true;
       }
       if (Player.fly === true) {
@@ -520,12 +520,12 @@ function movePlayer() {
     }
     if (Player.fly === false) {
       if (Player.velocity > 0) {
-        Player.velocity *= 1.05; // Faster
+        Player.velocity *= 1.10; // Faster
       } else {
 
-        Player.velocity *= 0.92; // Slower
-        if (Player.jumping === true && Player.velocity > -0.01) {
-          Player.velocity = 0.01;
+        Player.velocity *= 0.90; // Slower
+        if (Player.jumping === true && Player.velocity > -0.2) {
+          Player.velocity = 0.05;
         }
       }
 
