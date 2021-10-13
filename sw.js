@@ -212,7 +212,7 @@ sortagames.repl.co
           if (ver > 0) {
             // It's actually a number
             console.log(
-              "Latest version: %O.\n Current: %O.",
+              "Latest version: %O.\n Cached version: %O.",
               ver,
               current,
             );
