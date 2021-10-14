@@ -462,8 +462,18 @@ function render() {
   requestAnimationFrame(render);
   movePlayer();
   idleLoad();
+  updateDebugger();
   renderer.render(scene, camera);
 }
+
+function updateDebugger() {
+  globalThis.postMessage(['debug_info', [
+    Player.fps,
+    camera.position
+    ]
+  ]);
+}
+
 
 function movePlayer() {
   if (Player.canMove == true) {

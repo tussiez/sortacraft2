@@ -72,6 +72,7 @@ const delay = (seconds) =>
 
 const canvas = document.getElementById("3d");
 const offscreen = canvas.transferControlToOffscreen();
+let debugBox = document.querySelector('#debug');
 
 let isMobile = (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent));
 
@@ -173,8 +174,8 @@ if (isMobile === true) {
   controls.onJumpEnd = () => {
     worker.postMessage(['touch_jump_end']);
   }
-  controls.lookEvent = (x,y) => {
-    worker.postMessage(['touch_look', {x,y}]);
+  controls.lookEvent = (x, y) => {
+    worker.postMessage(['touch_look', { x, y }]);
   }
 }
 
@@ -226,6 +227,10 @@ worker.onmessage = ({ data }) => {
   if ("asset_loaded" == op) {
     progressInfo.innerText = 'Generating world..'
   }
+  if ("debug_info" == op) {
+    window.PlayerPosition = msg[1];
+    window.PlayerFPS = msg[0];
+  }
 };
 
 // Pass events
@@ -264,7 +269,7 @@ const commands = document.getElementById("commands");
 
 body.addEventListener(
   "keydown",
-  ({ key }) => {
+  ({ key, ctrlKey }) => {
     // const init = !typingCommand && "t" === key;
     // I think this ^ would work ~ xxpertHacker
     let init = false;
@@ -281,6 +286,13 @@ body.addEventListener(
       }
       if ("t" === key) {
         init = true;
+      }
+      if ("`" === key && ctrlKey === true) {
+        if (debugBox.style.display === "" || debugBox.style.display == 'block') {
+          debugBox.style.display = 'none';
+        } else {
+          debugBox.style.display = 'block';
+        }
       }
       // I added this so that it allows you to move... - baconman321
       worker.postMessage(["keydown", key]);

@@ -114,3 +114,18 @@ body {
 #inputCommand {
 	margin-left: 5px;
 }
+
+
+#debug {
+  z-index: 5;
+  position: absolute;
+  left: 1%;
+  top: 1%;
+  height: 20%;
+  width: 20%;
+  display: none;
+}
+.inner {
+  margin: 4px;
+  padding: 4px;
+}
