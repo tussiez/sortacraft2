@@ -295,7 +295,7 @@ body.addEventListener(
       if ("t" === key) {
         init = true;
       }
-      if ("`" === key && ctrlKey === true) {
+      if ("`" === key) {
         if (debugBox.style.display === "" || debugBox.style.display == 'block') {
           debugBox.style.display = 'none';
         } else {
