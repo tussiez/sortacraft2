@@ -61,6 +61,7 @@ const handlers = {
   mousedown,
   mouseup,
   resize,
+  startGame,
   mousemove,
   touch_forward,
   touch_backward,
@@ -86,6 +87,7 @@ let chunkGen;
 let localWorld;
 let renderer;
 let touchControls;
+let hasRender = false;
 
 const cellSize = 32;
 const tileSize = 16;
@@ -150,6 +152,13 @@ function mousedown(e) {
     if (e[1] == 0) {
       modifyChunk(0); //Break block
     }
+  }
+}
+
+function startGame() {
+  if(hasRender === false) {
+    hasRender = true;
+    render(); // Start rendering & world gen
   }
 }
 
@@ -314,7 +323,7 @@ function main(c) {
   camera.position.set(32, 48, 32);
   camera.lookAt(new THREE.Vector3(16, 32, 16));
   Methods.WASMInitiateS().then(() => {
-    Promise.resolve().then(render);
+ //   Promise.resolve().then(render);
   });
 }
 

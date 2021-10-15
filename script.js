@@ -122,6 +122,12 @@ worker.postMessage([
     offscreen,
   ]);
 
+window.startGame = () => {
+  worker.postMessage(["startGame"]);
+  menus.style.display = 'none';
+  loadingDiv.style.display = 'block';
+}
+
 if (isMobile === true) {
   controls = new TouchControls(canvas);
   controls.createUI();
@@ -203,11 +209,12 @@ let progressBar = document.getElementById('loader');
 let loadingDiv = document.getElementById('centered');
 let overlayDiv = document.getElementById('dirt_bg');
 let progressInfo = document.getElementById('loadingInfo');
+let menus = document.querySelector('#menu');
 
 const setProgress = (state) => {
   if (state < 100) {
     // overlayDiv.style.display = 'block';
-    // loadingDiv.style.display = 'block';
+   // loadingDiv.style.display = 'block';
     progressBar.style.width = state + '%';
   } else {
     overlayDiv.style.display = 'none';
@@ -231,6 +238,7 @@ worker.onmessage = ({ data }) => {
     window.PlayerPosition = msg[1];
     window.PlayerFPS = msg[0];
   }
+
 };
 
 // Pass events

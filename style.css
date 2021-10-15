@@ -65,6 +65,7 @@ body {
   text-align:center;
   z-index:99;
   color: white;
+  display: none;
 }
 #loader_outer {
   position: absolute;
@@ -80,6 +81,23 @@ body {
   background-color:#95ff8f;
 }
 
+#playbt {
+  height: 40px;
+  width: 150px;
+  font-family: Minecraft;
+  background-color: gray;
+  border: 2px solid white;
+  color: white;
+  position: relative;
+  left: calc(50% - 75px);
+  font-size: 16px;
+  cursor: pointer;
+}
+#playbt:hover {
+  background-color: skyblue;
+  text-decoration: underline;
+}
+
 #dirt_bg {
   height:100%;
   width:100%;
@@ -91,6 +109,16 @@ body {
   background-size: 64px 64px;
   background-repeat: repeat;
   image-rendering:pixelated; /*probably already comes from parent <body>, idk*/
+}
+
+#menu {
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 98;
+  color: white;
 }
 
 .message {
