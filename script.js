@@ -205,6 +205,8 @@ async function makeMessage(msg) {
 }
 
 
+
+
 let progressBar = document.getElementById('loader');
 let loadingDiv = document.getElementById('centered');
 let overlayDiv = document.getElementById('dirt_bg');
@@ -219,6 +221,14 @@ const setProgress = (state) => {
   } else {
     overlayDiv.style.display = 'none';
     loadingDiv.style.display = 'none';
+  }
+}
+
+window.setRenderDistance = (dist) => {
+  if(typeof dist === 'number') {
+    if(dist >= 2 && dist <= 12) {
+      worker.postMessage(['setrenderdist',dist]);
+    }
   }
 }
 

@@ -68,13 +68,13 @@ class VoxelWorld {
     return cell[voxelOffset];
   }
   getTransparentVoxel(voxel) {
-    if (voxel == 46) return true;
+    if (voxel == 46 || voxel == 48) return true;
   }
   getWater(voxel) { // Just in case
     if (voxel == 4) return true;
   }
   getCustomBlockType(voxel) {
-    if (voxel == 49) return VoxelWorld.grassFaces;
+    if (voxel == 48) return VoxelWorld.grassFaces;
     return VoxelWorld.faces;
   }
   generateGeometryDataForCell(cellX, cellY, cellZ, rx, ry, rz) {
@@ -311,14 +311,12 @@ VoxelWorld.grassFaces = [
     uvRow: 0,
     dir: [1, 0, 1],
     corners: [
-      { pos: [1, 1, 0], uv: [0, 0], },
+      { pos: [1, 1, 0], uv: [0, 1], },
       { pos: [1, 0, 0], uv: [0, 0], },
-      { pos: [0, 1, 1], uv: [0, 0], },
-      { pos: [0, 0, 1], uv: [0, 0], },
+      { pos: [0, 1, 1], uv: [1, 1], },
+      { pos: [0, 0, 1], uv: [1, 0], },
     ],
   },
-
-
 ];
 
 VoxelWorld.faces_half = [//half block

@@ -91,7 +91,7 @@ const Commands = {
           this.message("<Game> Allowed values for render distance: 2-12");
         }
       } else {
-        this.message("<Game> Invalid argument - use a number");
+        this.message("<Game> Render dist: " + Player.getRenderDist()+", set with /renderdist #");
       }
     }
     if (cmd == 'help') {

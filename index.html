@@ -16,7 +16,21 @@
     <div id="menu">
       <div class="inner">
       <h1 style="text-align:center;">SortaCraft!</h1>
-        <button onclick="window.startGame()" id="playbt">Singleplayer</button>
+        <button onclick="window.startGame()" id="playbt" class="centerBt">Singleplayer</button>
+        <button onclick="document.querySelector('#settings').style.display = 'block'" id="settingsbt" class="centerBt">Settings</button>
+        <div id="settings">
+          <div class="inner">
+          <h3 style="text-align:center;">Settings
+            <a style="float:right;color:white" href="#!" onclick="document.querySelector('#settings').style.display='none'">Close</a>
+          </h3>
+          <hr>
+          <div class="setting_range">
+            <input type="range" min="2" max="12" value="4" oninput="window.setRenderDistance(Number(this.value));this.nextElementSibling.innerText = 'Render Distance: '+this.value+' chunks'">
+            <span>Render Distance: 4 chunks</span>
+          </div>
+
+          </div>
+        </div>
       </div>
     </div>
     <div id="centered">

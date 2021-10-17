@@ -63,6 +63,7 @@ const handlers = {
   resize,
   startGame,
   mousemove,
+  setrenderdist,
   touch_forward,
   touch_backward,
   touch_left,
@@ -88,6 +89,7 @@ let localWorld;
 let renderer;
 let touchControls;
 let hasRender = false;
+let sun;
 
 const cellSize = 32;
 const tileSize = 16;
@@ -103,7 +105,7 @@ const Player = {
   speed: .1,
   canCull: true,
   canMove: false,
-  fogDensityMult: 1.5,
+  fogDensityMult: 1,
   jumping: false,
   canUp: true,
   velocity: 0.01,
@@ -113,6 +115,9 @@ const Player = {
   renderDist: 4 * cellSize,
   setRenderDist: (dist) => {
     Player.renderDist = dist * cellSize;
+  },
+  getRenderDist: () => {
+    return Player.renderDist / cellSize;
   },
   canLoad: true,
   seed: floor(Math.random() * 99999),
@@ -160,6 +165,10 @@ function startGame() {
     hasRender = true;
     render(); // Start rendering & world gen
   }
+}
+
+function setrenderdist(e) {
+  Player.setRenderDist(e[1]);
 }
 
 function pointerLock(e) {
@@ -251,29 +260,33 @@ function main(c) {
 
   scene = new THREE.Scene();
   scene.background = new THREE.Color("gray");
-  Player.fog = scene.fog = new THREE.FogExp2(
+  Player.fog = scene.fog = new THREE.Fog(
     "gray",
-    Player.fogDensityMult / Player.renderDist,
+    1,
+    250,
   );
   Player.updateFog = () => {
-    scene.fog.density = Player.fogDensityMult / Player.renderDist;
+    scene.fog.near = Player.fogDensityMult;
   };
-  camera = new THREE.PerspectiveCamera(70, c[2] / c[3], 0.1, 500);
+  camera = new THREE.PerspectiveCamera(70, c[2] / c[3], 0.1, 1000);
   Player.camera = camera;
   renderer = new THREE.WebGLRenderer({ canvas });
   renderer.setSize(c[2], c[3], false); //false for offscreen
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  setupLighting();
   controls = new PlayerControls(camera);
   touchControls = new TouchControls(camera, keys);
 
   geometryData = new GeometryData(
-    new THREE.MeshBasicMaterial({
+    new THREE.MeshLambertMaterial({
       color: "gray",
-      transparent: true,
+    //  transparent: true,
       depthWrite: true,
       depthTest: true,
-      alphaTest: .1,
       opacity: 0,
-      // side: THREE.DoubleSide, double sided
+      alphaTest: 0.1,
+      side: THREE.DoubleSide,
     }),
   );
   geometryData.onTextureLoad = () => globalThis.postMessage(['asset_loaded']);
@@ -329,7 +342,7 @@ function main(c) {
 
 function createPointer() {
   Player.pointer = new THREE.Mesh(
-    new THREE.BoxGeometry(1, 1, 1),
+    new THREE.BoxGeometry(1.01, 1.01, 1.01),
     new THREE.MeshBasicMaterial({
       color: "white",
       wireframe: true,
@@ -464,7 +477,41 @@ function idleLoad() {
       Player.canLoad = false;
     }
   }
-  globalThis.postMessage(['progress', (loadedNearPlayer / renderDist) * 2]);
+  globalThis.postMessage(['progress', loadedNearPlayer/(renderDist/2)]);
+}
+
+function setupLighting() {
+  sun = new THREE.Mesh(
+    new THREE.BoxGeometry(100,100,100),
+    new THREE.MeshBasicMaterial({color: 'yellow',fog:false})
+  );
+  sun.position.set(0,500,0);
+  sun.lite = new THREE.HemisphereLight(0xffffff,0xffffff,0.3);
+
+  sun.spot = new THREE.SpotLight(0xffffff,1);
+  sun.spot.castShadow = true;
+  sun.spot.shadow.camera.near = 300;
+  sun.spot.shadow.camera.far = 700;
+  sun.spot.shadow.mapSize.height = 2048;
+  sun.spot.shadow.mapSize.width = 2048;
+
+  sun.add(sun.spot);
+  scene.add(sun.spot.target);
+  scene.add(sun);
+  scene.add(sun.lite);
+}
+
+function updateSun() {
+  sun.position.set(camera.position.x,0,camera.position.z);
+  sun.lookAt(camera.position);
+  sun.spot.target.position.copy(camera.position);
+  sun.spot.target.lookAt(camera.position);
+
+  sun.position.x += 500*Math.cos(performance.now()/50000);
+  sun.position.y += 1000*Math.sin(performance.now()/50000);
+  let d = sun.position.distanceTo(camera.position);
+  sun.spot.shadow.camera.near = d-200;
+  sun.spot.shadow.camera.far = d+200;
 }
 
 function render() {
@@ -472,6 +519,7 @@ function render() {
   movePlayer();
   idleLoad();
   updateDebugger();
+  updateSun();
   renderer.render(scene, camera);
 }
 
