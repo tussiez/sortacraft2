@@ -482,18 +482,23 @@ function idleLoad() {
 
 function setupLighting() {
   sun = new THREE.Mesh(
-    new THREE.BoxGeometry(100,100,100),
+    new THREE.BoxGeometry(50,50,50),
     new THREE.MeshBasicMaterial({color: 'yellow',fog:false})
   );
   sun.position.set(0,500,0);
-  sun.lite = new THREE.HemisphereLight(0xffffff,0xffffff,0.3);
+  sun.lite = new THREE.HemisphereLight(0xffffbb, 0x080820, 0.4);
 
-  sun.spot = new THREE.SpotLight(0xffffff,1);
+  sun.spot = new THREE.DirectionalLight(0xffffff,1.2);
   sun.spot.castShadow = true;
-  sun.spot.shadow.camera.near = 300;
-  sun.spot.shadow.camera.far = 700;
+  sun.spot.shadow.camera.near = 500;
+  sun.spot.shadow.camera.far = 1200;
+  sun.spot.shadow.camera.left = -250;
+  sun.spot.shadow.camera.right = 250;
+  sun.spot.shadow.camera.top = 250;
+  sun.spot.shadow.camera.bottom = -250;
   sun.spot.shadow.mapSize.height = 2048;
   sun.spot.shadow.mapSize.width = 2048;
+  sun.spot.shadow.bias = -0.001;
 
   sun.add(sun.spot);
   scene.add(sun.spot.target);
@@ -502,16 +507,13 @@ function setupLighting() {
 }
 
 function updateSun() {
-  sun.position.set(camera.position.x,0,camera.position.z);
+  sun.position.set(camera.position.x,camera.position.y+300,camera.position.z);
   sun.lookAt(camera.position);
   sun.spot.target.position.copy(camera.position);
   sun.spot.target.lookAt(camera.position);
 
-  sun.position.x += 500*Math.cos(performance.now()/50000);
+  sun.position.x += 500*Math.cos(performance.now()/50900);
   sun.position.y += 1000*Math.sin(performance.now()/50000);
-  let d = sun.position.distanceTo(camera.position);
-  sun.spot.shadow.camera.near = d-200;
-  sun.spot.shadow.camera.far = d+200;
 }
 
 function render() {
@@ -621,7 +623,6 @@ function setChunk(mesh) {
   // Get cell (divide by cellSize)
   const { position } = mesh;
   const cell = localWorld.getCellForVoxel(...Methods.spread(position));
-
   Chunks[Methods.string(Methods.spread(position))] = {
     voxels: cell,
     mesh,
@@ -634,13 +635,13 @@ function setChunk(mesh) {
 }
 
 function updateChunk(geometry, position) {
-  const chunk = Chunks[Methods.string(Methods.spread(position))];
-
+  let chunk = Chunks[Methods.string(Methods.spread(position))];
   if (chunk != undefined) {
     chunk.mesh.geometry = geometry;
     Player.canCull = true;
   } else {
     setChunk(geometryData.makeMesh(geometry, position));
+    
   }
 }
 
