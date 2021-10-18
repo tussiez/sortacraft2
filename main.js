@@ -109,6 +109,7 @@ const Player = {
   jumping: false,
   canUp: true,
   velocity: 0.01,
+  sunCycle: true,
   fly: false,
   edits: [],
   maxReach: 8, // Cannot select things farther than X blocks away
@@ -161,7 +162,7 @@ function mousedown(e) {
 }
 
 function startGame() {
-  if(hasRender === false) {
+  if (hasRender === false) {
     hasRender = true;
     render(); // Start rendering & world gen
   }
@@ -259,9 +260,9 @@ function main(c) {
 
 
   scene = new THREE.Scene();
-  scene.background = new THREE.Color("gray");
+  scene.background = new THREE.Color("skyblue");
   Player.fog = scene.fog = new THREE.Fog(
-    "gray",
+    "skyblue",
     1,
     250,
   );
@@ -281,7 +282,7 @@ function main(c) {
   geometryData = new GeometryData(
     new THREE.MeshLambertMaterial({
       color: "gray",
-    //  transparent: true,
+      //  transparent: true,
       depthWrite: true,
       depthTest: true,
       opacity: 0,
@@ -336,7 +337,7 @@ function main(c) {
   camera.position.set(32, 48, 32);
   camera.lookAt(new THREE.Vector3(16, 32, 16));
   Methods.WASMInitiateS().then(() => {
- //   Promise.resolve().then(render);
+    //   Promise.resolve().then(render);
   });
 }
 
@@ -477,43 +478,49 @@ function idleLoad() {
       Player.canLoad = false;
     }
   }
-  globalThis.postMessage(['progress', loadedNearPlayer/(renderDist/2)]);
+  globalThis.postMessage(['progress', loadedNearPlayer / (renderDist / 2)]);
 }
 
 function setupLighting() {
   sun = new THREE.Mesh(
-    new THREE.BoxGeometry(50,50,50),
-    new THREE.MeshBasicMaterial({color: 'yellow',fog:false})
+    new THREE.BoxGeometry(50, 50, 50),
+    new THREE.MeshBasicMaterial({ color: 'yellow', fog: false })
   );
-  sun.position.set(0,500,0);
+  sun.position.set(0, 500, 0);
   sun.lite = new THREE.HemisphereLight(0xffffbb, 0x080820, 0.4);
 
-  sun.spot = new THREE.DirectionalLight(0xffffff,1.2);
+  sun.spot = new THREE.DirectionalLight(0xffffff, 1.2);
   sun.spot.castShadow = true;
-  sun.spot.shadow.camera.near = 500;
-  sun.spot.shadow.camera.far = 1200;
-  sun.spot.shadow.camera.left = -250;
-  sun.spot.shadow.camera.right = 250;
-  sun.spot.shadow.camera.top = 250;
-  sun.spot.shadow.camera.bottom = -250;
+  sun.spot.shadow.camera.near = 200;
+  sun.spot.shadow.camera.far = 400;
+  sun.spot.shadow.camera.left = -125;
+  sun.spot.shadow.camera.right = 125;
+  sun.spot.shadow.camera.top = 125;
+  sun.spot.shadow.camera.bottom = -125;
   sun.spot.shadow.mapSize.height = 2048;
   sun.spot.shadow.mapSize.width = 2048;
   sun.spot.shadow.bias = -0.001;
 
-  sun.add(sun.spot);
+  scene.add(sun.spot);
   scene.add(sun.spot.target);
   scene.add(sun);
   scene.add(sun.lite);
 }
 
 function updateSun() {
-  sun.position.set(camera.position.x,camera.position.y+300,camera.position.z);
+  sun.position.set(camera.position.x, camera.position.y + 300, camera.position.z);
   sun.lookAt(camera.position);
   sun.spot.target.position.copy(camera.position);
   sun.spot.target.lookAt(camera.position);
+  sun.spot.position.set(camera.position.x-100,camera.position.y+300,camera.position.z);
 
-  sun.position.x += 500*Math.cos(performance.now()/50900);
-  sun.position.y += 1000*Math.sin(performance.now()/50000);
+  if (Player.sunCycle === true) {
+
+    sun.position.x += 500 * Math.cos(performance.now() / 50000);
+    sun.position.y += 1000 * Math.sin(performance.now() / 50000);
+  } else {
+    sun.position.set(camera.position.x - 100,camera.position.y+300,camera.position.z);
+  }
 }
 
 function render() {
@@ -529,7 +536,7 @@ function updateDebugger() {
   globalThis.postMessage(['debug_info', [
     Player.fps,
     camera.position
-    ]
+  ]
   ]);
 }
 
@@ -641,7 +648,7 @@ function updateChunk(geometry, position) {
     Player.canCull = true;
   } else {
     setChunk(geometryData.makeMesh(geometry, position));
-    
+
   }
 }
 

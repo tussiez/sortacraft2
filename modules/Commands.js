@@ -11,7 +11,7 @@ sortagames.repl.co
 import Methods from '../modules/Methods.js'
 
 const Commands = {
-  supported: ['tp', 'pos', 'fps', 'help', 'speed', 'seed', 'fog', 'renderdist','fly'],
+  supported: ['tp', 'pos', 'fps', 'help', 'speed', 'seed', 'fog', 'renderdist','fly','daycycle'],
   parse: function (str, Player) {
     if (!str.startsWith('/')) {
       this.message('<You> ' + str);
@@ -93,6 +93,10 @@ const Commands = {
       } else {
         this.message("<Game> Render dist: " + Player.getRenderDist()+", set with /renderdist #");
       }
+    }
+    if(cmd == 'daycycle') {
+      Player.sunCycle = !Player.sunCycle;
+      this.message("<Game> Day cycle: "+Player.sunCycle);
     }
     if (cmd == 'help') {
       this.message("<Game> Supported: " + Methods.string(this.supported))
