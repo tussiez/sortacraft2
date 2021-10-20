@@ -105,6 +105,7 @@ let typingCommand = false;
 let typedCommand = "";
 let pointerLocked = false;
 let removing = 0;
+let graphicsMode = true;
 
 function changeCallback() {
   pointerLocked = !pointerLocked;
@@ -126,6 +127,16 @@ window.startGame = () => {
   worker.postMessage(["startGame"]);
   menus.style.display = 'none';
   loadingDiv.style.display = 'block';
+}
+
+window.toggleGraphics = (ele) => {
+  graphicsMode = !graphicsMode;
+  worker.postMessage(["graphicsToggle",graphicsMode]);
+  if(graphicsMode === false) {
+    ele.innerText = 'Graphics: Fast';
+  } else {
+    ele.innerText = 'Graphics: Fancy';
+  }
 }
 
 if (isMobile === true) {

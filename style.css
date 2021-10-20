@@ -102,6 +102,10 @@ button:hover {
   text-decoration: underline;
 }
 
+.settingsbt {
+  font-size: 12px;
+}
+
 .setting_range {
   height: 40px;
   width: 200px;
@@ -205,6 +209,7 @@ input[type=range]::-webkit-slider-thumb:hover {
 }
 #inputCommand {
 	margin-left: 5px;
+  width: 100%;
 }
 
 

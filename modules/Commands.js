@@ -11,7 +11,7 @@ sortagames.repl.co
 import Methods from '../modules/Methods.js'
 
 const Commands = {
-  supported: ['tp', 'pos', 'fps', 'help', 'speed', 'seed', 'fog', 'renderdist','fly','daycycle'],
+  supported: ['tp', 'pos', 'fps', 'help', 'speed', 'seed', 'fog', 'renderdist','fly','daycycle','graphics'],
   parse: function (str, Player) {
     if (!str.startsWith('/')) {
       this.message('<You> ' + str);
@@ -79,6 +79,11 @@ const Commands = {
     if(cmd == 'fly') {
       Player.fly = !Player.fly;
       this.message("<Game> Flying is: " + (Player.fly === true ? "enabled" : "disabled"));
+    }
+
+    if(cmd === 'graphics') {
+      Player.setGraphics(!Player.graphicsMode);
+      this.message("<Game> Changed graphics mode to "+(Player.graphicsMode === true ? 'fancy' : 'fast [shadowmap baked]'));
     }
 
     if (cmd == 'renderdist') {

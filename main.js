@@ -63,6 +63,7 @@ const handlers = {
   resize,
   startGame,
   mousemove,
+  graphicsToggle,
   setrenderdist,
   touch_forward,
   touch_backward,
@@ -111,6 +112,17 @@ const Player = {
   velocity: 0.01,
   sunCycle: true,
   fly: false,
+  graphicsMode: true,
+  setGraphics: (v) => {
+    if(Player.graphicsMode != v) {
+      if(v === true) {
+        renderer.shadowMap.enabled = true;
+      } else {
+        renderer.shadowMap.enabled = false;
+      }
+    }
+    Player.graphicsMode = v;
+  },
   edits: [],
   maxReach: 8, // Cannot select things farther than X blocks away
   renderDist: 4 * cellSize,
@@ -174,6 +186,11 @@ function setrenderdist(e) {
 
 function pointerLock(e) {
   Player.canMove = e[1];
+}
+
+function graphicsToggle(e) {
+  let v = e[1];
+  Player.setGraphics(v);
 }
 
 function playerCommand(e) {
