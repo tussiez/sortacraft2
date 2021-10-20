@@ -31,7 +31,7 @@ body {
 }
 
 #chatBox {
-	width: 60%;
+	width: 100%;
 	height: 20%;
 	overflow: auto;
 	background-color: none;
@@ -79,6 +79,8 @@ body {
   height:15px;
   width:0px;
   background-color:#95ff8f;
+  color: black;
+  font-size: 12px;
 }
 
 button {
@@ -190,7 +192,6 @@ input[type=range]::-webkit-slider-thumb:hover {
 }
 
 .message {
-	height: 24px;
 	display: inline-block;
 	background-color: rgba(0, 0, 0, 0.25);
 	padding: 2px;
@@ -199,7 +200,7 @@ input[type=range]::-webkit-slider-thumb:hover {
 
 #commands {
 	height: 24px;
-	width: 30%;
+	width: 100%;
 	background-color: black;
 	color: white;
 	position: absolute;

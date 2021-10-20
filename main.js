@@ -395,9 +395,9 @@ function idleLoad() {
   const { x, y, z } = camera.position;
   const { renderDist } = Player;
   // floor( camera.position.{x, y, z} ) +- Player.renderDist
-  const [maxX, minX] = pm(floor(x), renderDist);
-  const [maxY, minY] = pm(floor(y), renderDist);
-  const [maxZ, minZ] = pm(floor(z), renderDist);
+  const [maxX, minX] = pm(floor(x), renderDist/2);
+  const [maxY, minY] = pm(floor(y), renderDist/2);
+  const [maxZ, minZ] = pm(floor(z), renderDist/2);
 
   for (const chunk of ChunksIndex) {
     let ch = Chunks[Methods.string(chunk)];
@@ -495,7 +495,7 @@ function idleLoad() {
       Player.canLoad = false;
     }
   }
-  globalThis.postMessage(['progress', loadedNearPlayer / (renderDist / 2)]);
+  globalThis.postMessage(['progress',loadedNearPlayer/((Player.renderDist/cellSize)**2)]);
 }
 
 function setupLighting() {

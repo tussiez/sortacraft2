@@ -229,6 +229,7 @@ const setProgress = (state) => {
     // overlayDiv.style.display = 'block';
    // loadingDiv.style.display = 'block';
     progressBar.style.width = state + '%';
+    progressBar.innerText = Math.floor(state)+'%';
   } else {
     overlayDiv.style.display = 'none';
     loadingDiv.style.display = 'none';
