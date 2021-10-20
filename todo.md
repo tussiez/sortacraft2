@@ -4,4 +4,6 @@
 - Add trees back
 - Add PWA functionality back
 - Make inventory
-- Add menu
+- Add light blocks
+- Drop particles
+- Flowing water/liquids
