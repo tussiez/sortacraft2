@@ -543,6 +543,10 @@ function updateSun() {
 
 function render() {
   requestAnimationFrame(render);
+  if(Math.random() > 0.85) {
+    renderer.shadowMap.enabled = true;
+    // Random update
+  }
   movePlayer();
   idleLoad();
   updateDebugger();
