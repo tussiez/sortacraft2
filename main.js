@@ -113,12 +113,13 @@ const Player = {
   sunCycle: true,
   fly: false,
   graphicsMode: true,
+  shadowMap: true,
   setGraphics: (v) => {
     if(Player.graphicsMode != v) {
       if(v === true) {
-        renderer.shadowMap.enabled = true;
+        Player.shadowMap = true;
       } else {
-        renderer.shadowMap.enabled = false;
+        Player.shadowMap = false;
       }
     }
     Player.graphicsMode = v;
@@ -547,6 +548,7 @@ function render() {
   updateDebugger();
   updateSun();
   renderer.render(scene, camera);
+  renderer.shadowMap.enabled = false; // Disable after render
 }
 
 function updateDebugger() {
@@ -656,6 +658,7 @@ function setChunk(mesh) {
   ChunksIndex.push(Methods.string(Methods.spread(position)));
   Player.canLoad = true;
   scene.add(mesh);
+  if(Player.shadowMap === true) renderer.shadowMap.enabled = true;
 }
 
 function updateChunk(geometry, position) {
@@ -667,6 +670,7 @@ function updateChunk(geometry, position) {
     setChunk(geometryData.makeMesh(geometry, position));
 
   }
+  if(Player.shadowMap === true) renderer.shadowMap.enabled = true;
 }
 
 function movePointer() {
