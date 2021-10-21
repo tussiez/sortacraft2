@@ -234,6 +234,8 @@ const setProgress = (state) => {
     overlayDiv.style.display = 'none';
     loadingDiv.style.display = 'none';
   }
+
+  window.PlayerProg = state;
 }
 
 window.setRenderDistance = (dist) => {

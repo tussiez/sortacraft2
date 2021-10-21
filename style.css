@@ -23,7 +23,16 @@ body {
 	image-rendering: pixelated;
 	font-family: Minecraft;
 }
-
+#author {
+  position: fixed;
+  right:0;
+  bottom: 0;
+}
+#ver {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+}
 .gameCanvas {
 	position: absolute;
 	top: 0;
@@ -221,6 +230,7 @@ input[type=range]::-webkit-slider-thumb:hover {
   top: 1%;
   height: 20%;
   width: 20%;
+  min-width: 250px;
   display: none;
   color: white;
 }

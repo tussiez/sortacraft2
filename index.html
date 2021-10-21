@@ -15,9 +15,11 @@
     <div id="dirt_bg"></div>
     <div id="menu">
       <div class="inner">
-      <h1 style="text-align:center;">SortaCraft!</h1>
+      <h1 style="text-align:center;">SortaCraft</h1>
         <button onclick="window.startGame()" id="playbt" class="centerBt">Singleplayer</button>
         <button onclick="document.querySelector('#settings').style.display = 'block'" id="settingsbt" class="centerBt">Settings</button>
+        <span id="author"><a href="https://sortagames.repl.co/" style="color:white;">&copy;SortaGames</a></span>
+        <span id="ver">v0.00</span>
         <div id="settings">
           <div class="inner">
           <h3 style="text-align:center;">Settings
@@ -45,6 +47,7 @@
       <div class="inner">
       <span id="debug_fps">FPS: 0</span><br>
       <span id="debug_pos">Pos: 0,0,0</span><br>
+      <span id="debug_prog">0%</span><br>
       <span id="debug_ver">Ver: 2</span>
       </div>
     </div>
