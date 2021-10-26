@@ -134,7 +134,7 @@ const Player = {
     return Player.renderDist / cellSize;
   },
   canLoad: true,
-  seed: floor(Math.random() * 99999),
+  seed: 12345,
   selectedVoxel: 1,
   camera: undefined,
   fps: 0,

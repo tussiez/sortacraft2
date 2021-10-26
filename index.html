@@ -1,22 +1,39 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<meta charset="UTF-8">
-		<meta name="viewport" content="width=device-width">
-		<title>Sortacraft.. 2?</title>
-		<link href="./style.css" rel="stylesheet" type="text/css">
-		<link rel="icon" href="resources/img/ico/sortacraft.ico" type="image/x-icon">
-		<script src="./swLauncher.js" type="module"></script>
-    <!--<script src="lock.js"></script>-->
-		<script src="./script.js" type="module"></script>
-    <script src="modules/app_misc.js" type="module"></script>
-	</head>
-	<body>
-    <div id="dirt_bg"></div>
-    <div id="menu">
-      <div class="inner">
-      <h1 style="text-align:center;">SortaCraft</h1>
-        <button onclick="window.startGame()" id="playbt" class="centerBt">Singleplayer</button>
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width">
+  <meta name="description" content="A Minecraft-like sandbox voxel game.">
+  <meta name="author" content="SortaGames">
+
+	<title>SortaCraft 2</title>
+
+	<link href="./style.css" rel="stylesheet" type="text/css">
+	<link rel="icon" href="resources/img/ico/sortacraft.ico" type="image/x-icon">
+	<!-- Global site tag (gtag.js) - Google Analytics -->
+	<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y04HPZ2C55">
+
+	</script>
+	<script>
+		window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-Y04HPZ2C55');
+	</script>
+	<script src="./swLauncher.js" type="module"></script>
+	<!--<script src="lock.js"></script>-->
+	<script src="./script.js" type="module"></script>
+	<script src="modules/app_misc.js" type="module"></script>
+</head>
+
+<body>
+	<div id="dirt_bg"></div>
+	<div id="menu">
+		<div class="inner">
+			<h1 style="text-align:center;">SortaCraft</h1>
+			<button onclick="window.startGame()" id="playbt" class="centerBt">Singleplayer</button>
         <button onclick="document.querySelector('#settings').style.display = 'block'" id="settingsbt" class="centerBt">Settings</button>
         <span id="author"><a href="https://sortagames.repl.co/" style="color:white;">&copy;SortaGames</a></span>
         <span id="ver">v0.00</span>

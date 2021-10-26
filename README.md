@@ -1,8 +1,5 @@
 # SortaCraft 2
-A web-based Minecraft-like voxel sandbox.
-
-## History
-This project started two years ago, when tussiez was asked "make Minecraft." Early versions began to take shape. EekCraft, was mostly UI and a moving square. This square of dirt soon became a green cube. After months of failed attempts to "fix lag", tussiez was able to replicate a voxel engine tutorial from threejsfundamentals. Simplex and Perlin 3D terrain generation followed, with random trees and transparency. SortaGames was founded in 2020 with the intention of further development of SortaCraft. The official game was scrapped multiple times due to broken code and performance issues. In October 2020, SortaCraft 1 was officially released. It was a resounding success. SortaGames continued to work on SortaCraft, and also created other Repls under the "Sorta" name. SortaCraft 1 was scrapped soon after release and SortaCraft 2 was written, using WebAssembly and more Web Workers to boost performance significantly. Development on SortaCraft was stalled until mid-2021, and is now actively being worked on.  
+The sixth generation of SortaGames' attempt to create a sandbox game.
 
 ## Features
 - Voxel engine
@@ -26,9 +23,6 @@ This project started two years ago, when tussiez was asked "make Minecraft." Ear
 - Press "`" and Ctrl to display debug menu
 - Temp: Press 1,2, or 3 to select a block
 
-
-## History
-This project started two years ago, when tussiez was asked "make Minecraft." Early versions began to take shape. EekCraft, was mostly UI and a moving square. This square of dirt soon became a green cube. After months of failed attempts to "fix lag", tussiez was able to replicate a voxel engine tutorial from threejsfundamentals. Simplex and Perlin 3D terrain generation followed, with random trees and transparency. The SortaGames group was officially founded in 2020 with the intention of further development of SortaCraft. The official game was scrapped multiple times due to broken code and performance issues. In October 2020, SortaCraft 1 was officially released. It was a resounding success. SortaGames continued to work on SortaCraft, and also created other Repls under the "Sorta" name. SortaCraft 1 was scrapped soon after release and SortaCraft 2 was written, using WebAssembly and more Web Workers to boost performance significantly. Development on SortaCraft was stalled until mid-2021, and is now actively being worked on. 
 
 ## Contributors
 

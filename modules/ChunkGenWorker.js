@@ -26,7 +26,6 @@ onmessage = function (e) {
       });
 
       GlobalM.log("Perlin generating with (%O)!", e.data[5]);
-
       perlin = new Perlin(e.data[5]);
     } else {
       voxWorld.cells["0,0,0"].fill(0);
@@ -56,14 +55,6 @@ function mineHeight(x, z, y, cellSize) {
   const ele = perlin.noise(x / eleD, z / eleD, y);
   const rough = perlin.noise(x / 64, z / 64, y);
   const det = perlin.noise(x / 32, z / 32, y);
- /* GlobalM.log(
-    "eleD: (%O), ele: (%O), rough: (%O), det: (%O)",
-    eleD,
-    ele,
-    rough,
-    det,
-  );
-  */ // Aaaay spamm
   return Math.round(((ele + (rough * det) * .5) * (cellSize)));
 }
 
