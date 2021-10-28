@@ -1,3 +1,7 @@
+<!-- pong
+Hello?
+eee
+ -->
 <!DOCTYPE html>
 <html>
 
@@ -47,6 +51,10 @@
             <input type="range" min="2" max="12" value="4" oninput="window.setRenderDistance(Number(this.value));this.nextElementSibling.innerText = 'Render Distance: '+this.value+' chunks'">
             <span>Render Distance: 4 chunks</span>
           </div>
+          <div class="setting_range">
+            <input type="range" min="0" max="120" value="0" oninput="window.setFPSCap(Number(this.value));this.nextElementSibling.innerText = 'Max FPS: '+(Number(this.value) > 0 ? this.value : 'Auto')">
+            <span>Max FPS: Auto</span>
+            </div>
           <button class="settingsbt" onclick="window.toggleGraphics(this)">Graphics: Fancy</button>
 
           </div>

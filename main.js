@@ -64,6 +64,7 @@ const handlers = {
   startGame,
   mousemove,
   graphicsToggle,
+  setFpsCap,
   setrenderdist,
   touch_forward,
   touch_backward,
@@ -106,6 +107,7 @@ const Player = {
   speed: .1,
   canCull: true,
   canMove: false,
+  fpsCap: 0,//AUTO
   fogDensityMult: 1,
   jumping: false,
   canUp: true,
@@ -171,6 +173,13 @@ function mousedown(e) {
     if (e[1] == 0) {
       modifyChunk(0); //Break block
     }
+  }
+}
+
+function setFpsCap(e) {
+  let val = e[1];
+  if(val >= 0 && val <= 120) {
+    Player.fpsCap = val;
   }
 }
 
@@ -542,7 +551,11 @@ function updateSun() {
 }
 
 function render() {
-  requestAnimationFrame(render);
+  if(Player.fpsCap === 0) {
+    requestAnimationFrame(render);
+  } else {
+    setTimeout(render, 1000/Player.fpsCap);
+  }
   if(Math.random() > 0.85) {
     renderer.shadowMap.enabled = true;
     // Random update
@@ -555,6 +568,7 @@ function render() {
   renderer.shadowMap.enabled = false; // Disable after render
 }
 
+
 function updateDebugger() {
   globalThis.postMessage(['debug_info', [
     Player.fps,
@@ -565,18 +579,19 @@ function updateDebugger() {
 
 
 function movePlayer() {
+  let computedPlayerSpeed = Player.speed/(1000/60)*(1000/Player.fps);
   if (Player.canMove == true) {
     if (keys.has("w")) {
-      controls.forward(Player.speed, intersectPlayerSelf);
+      controls.forward(computedPlayerSpeed, intersectPlayerSelf);
     }
     if (keys.has("a")) {
-      controls.right(-Player.speed, intersectPlayerSelf);
+      controls.right(-computedPlayerSpeed, intersectPlayerSelf);
     }
     if (keys.has("s")) {
-      controls.forward(-Player.speed, intersectPlayerSelf);
+      controls.forward(-computedPlayerSpeed, intersectPlayerSelf);
     }
     if (keys.has("d")) {
-      controls.right(Player.speed, intersectPlayerSelf);
+      controls.right(computedPlayerSpeed, intersectPlayerSelf);
     }
     camera.position.y -= 1.5;
     if (keys.has(" ")) {
@@ -621,8 +636,7 @@ function movePlayer() {
       if (Player.velocity > 0) {
         Player.velocity *= 1.10; // Faster
       } else {
-
-        Player.velocity *= 0.90; // Slower
+        Player.velocity *= 0.9;
         if (Player.jumping === true && Player.velocity > -0.2) {
           Player.velocity = 0.05;
         }

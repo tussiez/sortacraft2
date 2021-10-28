@@ -33,7 +33,21 @@ const Commands = {
     }
 
     if (cmd == 'fps') {
-      this.message("<Game> " + Player.fps + " fps");
+      if(args.length == 1 && !isNaN(Number(args[0]))) {
+        if(Number(args[0]) >= 0 && Number(args[0]) <= 120) {
+
+        Player.fpsCap = Number(args[0]);
+        if(Player.fpsCap != 0) {
+      this.message("<Game> Set FPS cap to " + args[0]);
+        } else {
+          this.message("<Game> Set FPS to auto");
+        }
+        } else {
+          this.message("<Game>" + Player.fps + " fps, invalid args");
+        }
+      } else {
+        this.message("<Game> " + Player.fps + " fps, set with /fps [0(auto)-120]");
+      }
     }
 
     if (cmd == 'seed') {
