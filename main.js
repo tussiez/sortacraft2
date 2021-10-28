@@ -106,6 +106,7 @@ const Player = {
   speed: .1,
   canCull: true,
   canMove: false,
+  fpsCap: 60,
   fogDensityMult: 1,
   jumping: false,
   canUp: true,
@@ -542,7 +543,8 @@ function updateSun() {
 }
 
 function render() {
-  requestAnimationFrame(render);
+  //requestAnimationFrame(render);
+  setTimeout(render, 1000/Player.fpsCap);
   if(Math.random() > 0.85) {
     renderer.shadowMap.enabled = true;
     // Random update
