@@ -139,6 +139,12 @@ window.toggleGraphics = (ele) => {
   }
 }
 
+window.setFPSCap = (val) => {
+  if(typeof val === 'number') {
+    worker.postMessage(["setFpsCap", val]);
+  }
+}
+
 if (isMobile === true) {
   controls = new TouchControls(canvas);
   controls.createUI();

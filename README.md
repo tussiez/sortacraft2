@@ -1,5 +1,5 @@
 # SortaCraft 2
-The sixth generation of SortaGames' attempt to create a sandbox game.
+The sixth generation of SortaGames' voxel sandbox.
 
 ## Features
 - Voxel engine
