@@ -28,6 +28,17 @@ body {
   right:0;
   bottom: 0;
 }
+#festive_overlay {
+  position: absolute;
+  top:0;
+  left:0;
+  z-index: 1;
+  width: 100%;
+  height: 10%;
+  background-image: url("resources/img/festive/garland.png");
+  background-repeat: repeat-x;
+  background-size: 512px 100px;
+}
 #ver {
   position: fixed;
   left: 0;
@@ -182,6 +193,13 @@ input[type=range]::-webkit-slider-thumb:hover {
   border: 2px solid white;
   display: none;
 }
+#middled {
+  height: 50%;
+  width: 50%;
+  position: absolute;
+  left: 25%;
+  top: 25%;
+}
 
 #dirt_bg {
   height:100%;
@@ -190,8 +208,8 @@ input[type=range]::-webkit-slider-thumb:hover {
   top:0;
   left:0;
   z-index:98;
-  background-image: url("resources/img/dirt.png");
-  background-size: 64px 64px;
+  background-image: url("resources/img/festive/snow.png"), url("resources/img/dirt.png");
+  background-size: 512px 512px, 64px 64px;
   background-repeat: repeat;
   image-rendering:pixelated; /*probably already comes from parent <body>, idk*/
 }

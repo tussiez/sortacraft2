@@ -8,8 +8,8 @@ eee
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width">
-  <meta name="description" content="A Minecraft-like sandbox voxel game.">
-  <meta name="author" content="SortaGames">
+	<meta name="description" content="A Minecraft-like sandbox voxel game.">
+	<meta name="author" content="SortaGames">
 
 	<title>SortaCraft 2</title>
 
@@ -33,10 +33,14 @@ eee
 </head>
 
 <body>
-	<div id="dirt_bg"></div>
+	<div id="dirt_bg">
+    <!-- Festive overlay -->
+		<div id="festive_overlay"></div>
+    <!-- End -->
+	</div>
 	<div id="menu">
-		<div class="inner">
-			<h1 style="text-align:center;">SortaCraft</h1>
+		<div class="inner" id="middled">
+			<h1 style="text-align:center;font-size: 5vw;text-shadow: 2px 2px 2px black;">SortaCraft</h1>
 			<button onclick="window.startGame()" id="playbt" class="centerBt">Singleplayer</button>
         <button onclick="document.querySelector('#settings').style.display = 'block'" id="settingsbt" class="centerBt">Settings</button>
         <span id="author"><a href="https://sortagames.repl.co/" style="color:white;">&copy;SortaGames</a></span>
