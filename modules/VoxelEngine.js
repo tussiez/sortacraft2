@@ -1,6 +1,5 @@
 /*
 Voxel Engine
-@author threejsfundamentals
 @author tussiez
 
 sortagames.repl.co

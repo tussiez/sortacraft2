@@ -1,4 +1,3 @@
-// https://repl.it/@SortaGames/sortacraft2-xxpertHacker#modules/ChunkGen.js
 /*
 ChunkGen
 Handles ChunkGenWorker
