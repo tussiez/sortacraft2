@@ -193,13 +193,7 @@ input[type=range]::-webkit-slider-thumb:hover {
   border: 2px solid white;
   display: none;
 }
-#middled {
-  height: 50%;
-  width: 50%;
-  position: absolute;
-  left: 25%;
-  top: 25%;
-}
+/*#middled {}*/
 
 #dirt_bg {
   height:100%;
@@ -222,6 +216,9 @@ input[type=range]::-webkit-slider-thumb:hover {
   left: 0;
   z-index: 98;
   color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .message {
