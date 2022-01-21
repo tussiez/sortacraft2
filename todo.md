@@ -1,4 +1,6 @@
 # Todo
+- Inventory
+- Breaking/placing on touch
 - Improve realtime chunk edit speed
 - Add trees back
 - Add PWA functionality back
@@ -6,3 +8,5 @@
 - Add light blocks
 - Drop particles
 - Flowing water/liquids physics
+- Fix chunk corner errors
+- Correctly reload chunks
