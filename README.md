@@ -26,7 +26,7 @@ The sixth generation of SortaGames' voxel sandbox.
 
 ## Contributors
 
-- [@tussiez](https://replit.com/@tussiez), head developer, tileset artist*
+- [@tussiez](https://replit.com/@tussiez), head developer, tileset artist
 
 - [@Baconman321](https://replit.com/@baconman321), (inactive) script performance supervisor and developer
 
@@ -37,8 +37,6 @@ The sixth generation of SortaGames' voxel sandbox.
 - [@3mstar](https://replit.com/@3mstar), modeler
 
 - [@xxpertHacker](https://replit.com/@xxpertHacker) (resigned) - script quality and performance supervisor
-
-##### *A friend of tussiez, not mentioned here, drew a majority of the tileset. He is no longer contributing.
 
 # Want to contribute?
 Head to [SortaCraft2's repository](https://github.com/tussiez/sortacraft2).
