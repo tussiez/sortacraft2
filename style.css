@@ -38,6 +38,7 @@ body {
   background-image: url("resources/img/festive/garland.png");
   background-repeat: repeat-x;
   background-size: 512px 100px;
+  display: none; /*Control*/
 }
 #ver {
   position: fixed;
@@ -202,8 +203,9 @@ input[type=range]::-webkit-slider-thumb:hover {
   top:0;
   left:0;
   z-index:98;
-  background-image: url("resources/img/festive/snow.png"), url("resources/img/dirt.png");
-  background-size: 512px 512px, 64px 64px;
+  background-image: url("resources/img/dirt.png"); 
+  /*url("resources/img/festive/snow.png"),*/
+  background-size:/* 512px 512px, */64px 64px;
   background-repeat: repeat;
   image-rendering:pixelated; /*probably already comes from parent <body>, idk*/
 }
