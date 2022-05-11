@@ -6,10 +6,10 @@ The sixth generation of SortaGames' voxel sandbox.
 - Touch controls
 - Physics
 - Minecraft-style sandbox
-- Inventory (returning soon, late 2021)
-- Cached for faster load times
-- Progressive web app (returning soon, 2021)
-- SortaCraft 2 is over 200% faster than SortaCraft 1
+- ~~Inventory~~
+- Cache
+- ~~Progressive web app~~
+- Rapid world generation
 
 
 ## Controls

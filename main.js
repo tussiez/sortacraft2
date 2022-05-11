@@ -12,7 +12,7 @@ sortacraft.sortagames.repl.co
 */
 
 // Imports
-import * as THREE from "https://threejs.org/build/three.module.js";
+import * as THREE from "/three.js";
 import Methods from "/modules/Methods.js";
 import PlayerControls from "/modules/PlayerControls.js";
 import VoxelWorld from "/modules/VoxelEngine.js";
@@ -479,7 +479,7 @@ function idleLoad() {
           if (!scene.children.includes(chunk2.mesh)) {
             scene.add(chunk2.mesh);
             if (chunk2.mesh.material.opacity < 1) {
-              chunk2.mesh.material.opacity += 0.05;
+              chunk2.mesh.material.opacity += 0.05;  
             }
           }
         }
